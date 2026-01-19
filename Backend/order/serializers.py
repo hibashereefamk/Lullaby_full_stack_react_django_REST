@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)                 
-    variant_details = ProductVariantLiteSerializer(source='variant', read_only=True)
+    variant_details = ProductVariantLiteSerializer(source='variant', read_only=True)     
 
     class Meta:
         model = OrderItem
