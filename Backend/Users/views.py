@@ -1,0 +1,101 @@
+from django.shortcuts import render
+from django.core.mail import send_mail
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import CustomUser
+from django.utils import timezone
+from .utils import generate_otp,is_otp_expired
+from .models import CustomUser
+from .serializers import RegisterSerializer, LoginSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.conf import settings 
+
+class sendOTPView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        
+        # username = email.split('@')[0] 
+        user, created = CustomUser.objects.get_or_create(
+        # email=email, 
+        # defaults={'username': username}
+)
+        
+        
+        otp = generate_otp()
+        user.otp = otp
+        user.otp_created = timezone.now()
+        user.save()
+
+        
+        send_mail(
+            subject="Your OTP Code",
+            message=f"Your OTP code is: {otp}",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False
+        )
+
+        return Response({"message": "OTP sent successfully"}, status=status.HTTP_200_OK)
+
+class VerifyOTPView(APIView):
+    def post(self,request):
+         email=request.data.get('email')
+         otp=request.data.get('otp')
+         try:
+              user=CustomUser.objects.get(email=email,otp=otp)
+              if is_otp_expired(user.otp_created):
+                   return Response({"message": "OTP has expired"}, status=status.HTTP_400_BAD_REQUEST)
+              user.is_email_verification = True
+              user.otp = None
+              user.otp_created = None
+              user.save()
+              return Response({"message": "OTP verified successfully"}, status=status.HTTP_200_OK)
+         except CustomUser.DoesNotExist:
+              return Response({"message": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+         
+
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.save()
+
+            otp = generate_otp()
+            user.otp = otp
+            user.otp_created = timezone.now()
+            user.save()
+
+            send_mail(
+                subject="Your OTP Code",
+                message=f"Your OTP is {otp}",
+                from_email="hibashareefamk@gmail.com",
+                recipient_list=[user.email],
+            )
+
+            return Response(
+                {"message": "Registered successfully. OTP sent to email."},
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # 3. Get the user object that the serializer validated
+        user = serializer.validated_data['user']
+        # 4. Create tokens
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "role": user.role,
+            "email": user.email,
+            "name": user.name,
+        })

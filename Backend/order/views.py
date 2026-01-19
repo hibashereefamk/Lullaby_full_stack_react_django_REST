@@ -1,0 +1,52 @@
+from django.shortcuts import render
+from rest_framework import viewsets, permissions
+from .models import Order, OrderItem, Address, Payment
+from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer, PaymentSerializer 
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class OrderItemViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return OrderItem.objects.filter(order__user=self.request.user)
+    def perform_create(self, serializer):
+        order = serializer.validated_data['order']
+        if order.user != self.request.user:
+            raise permissions.PermissionDenied("You cannot add items to someone else's order.")
+        serializer.save()
+
+class AddressViewSet(viewsets.ModelViewSet):
+    serializer_class = AddressSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class PaymentViewSet(viewsets.ModelViewSet):
+    serializer_class = PaymentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Payment.objects.filter(order__user=self.request.user)
+
+    def perform_create(self, serializer):
+        order = serializer.validated_data['order']
+        if order.user != self.request.user:
+            raise permissions.PermissionDenied("You cannot create a payment for someone else's order.")
+        serializer.save()
+
+

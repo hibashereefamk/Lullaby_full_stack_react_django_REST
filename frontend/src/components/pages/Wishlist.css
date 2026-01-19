@@ -1,0 +1,97 @@
+/* Wishlist.css */
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.empty-wishlist {
+  text-align: center;
+  padding: 50px;
+  background: white;
+  border-radius: 8px;
+}
+
+.empty-msg {
+  color: #777;
+  font-size: 18px;
+}
+
+/* Specific Styles for Wishlist Cards */
+.wishlist-card {
+  position: relative;
+  border: 1px solid #f0f0f0;
+}
+
+.wishlist-card .image-wrapper {
+  height: 220px; /* Slightly smaller than main product grid */
+  padding: 15px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wishlist-card h3 {
+  font-size: 15px;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #333;
+}
+
+.wishlist-card .product-price {
+  color: #2563eb;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Action Buttons Container */
+.card-actions {
+  display: flex;
+  justify-content: flex-end; /* Pushes buttons to the right */
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #f9f9f9;
+}
+
+/* Icon Buttons */
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Delete Button Style */
+.icon-btn.delete {
+  background-color: #fff1f2;
+  color: #e11d48;
+}
+
+.icon-btn.delete:hover {
+  background-color: #ffe4e6;
+  transform: scale(1.1);
+}
+
+/* Cart Button Style */
+.icon-btn.cart {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.icon-btn.cart:hover {
+  background-color: #dbeafe;
+  transform: scale(1.1);
+}

@@ -1,0 +1,312 @@
+/* Produtdetails.css */
+
+.detail-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 20px;
+}
+
+.product-detail-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  background: white;
+  margin-bottom: 60px; /* Space for related products */
+}
+
+/* Image */
+.detail-image-wrapper {
+  background: #fdfdfd;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-img {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+/* Info */
+.category-name {
+  color: #888;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.product-title {
+  font-size: 2.2rem;
+  color: #111;
+  margin: 10px 0 20px 0;
+  line-height: 1.2;
+}
+
+/* Price Styles */
+.price-block {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.current-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: darkgreen;
+}
+
+/* RED STRIKE THROUGH */
+.original-price-red {
+  font-size: 1.3rem;
+  color: #ef4444; 
+  text-decoration: line-through;
+  text-decoration-color: #ef4444;
+  opacity: 0.8;
+}
+
+.description {
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 30px;
+  font-size: 1rem;
+}/* --- 1. SIZE SELECTION LOGIC --- */
+
+/* The Container for Size Buttons */
+.size-grid {
+  display: flex;
+  flex-wrap: wrap; /* Allows buttons to wrap to next line */
+  gap: 12px;       /* Space between buttons */
+  margin-bottom: 25px;
+}
+
+/* The Individual Size Button */
+.size-btn {
+  display: flex;
+  flex-direction: column; /* Stack text and stock msg vertically */
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;       /* Ensure they aren't too skinny */
+  padding: 12px 15px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+/* Text inside the button (e.g., "0-3 Months") */
+.size-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* HOVER STATE: When user mouse-overs a valid option */
+.size-btn:hover:not(:disabled) {
+  border-color: #000;
+  background-color: #f9f9f9;
+}
+
+/* ACTIVE STATE: When selected */
+.size-btn.active {
+  background-color: #111; /* Black background */
+  border-color: #111;
+}
+
+.size-btn.active .size-label {
+  color: #fff; /* White text */
+}
+
+/* DISABLED STATE: Stock is 0 */
+.size-btn:disabled {
+  background-color: #f4f4f4;
+  border-color: #eee;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.size-btn:disabled .size-label {
+  color: #aaa;
+  text-decoration: line-through; /* Optional: cross out the text */
+}
+
+
+/* --- 2. STOCK WARNING LOGIC --- */
+
+/* Base style for the small text below the size */
+.stock-msg {
+  font-size: 11px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* Logic: Less than 10 stock (Low Stock) */
+.stock-msg.low {
+  color: #e67e22; /* Orange Warning Color */
+}
+
+/* Logic: 0 Stock (Out of Stock) */
+.stock-msg.out {
+  color: #e74c3c; /* Red Error Color */
+}
+
+
+/* --- 3. PRICE LOGIC (Red Strikethrough) --- */
+
+.price-block {
+  display: flex;
+  align-items: baseline; /* Align fonts by their baseline */
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+
+.related-section {
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid #eaeaea;
+}
+
+.related-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.related-grid {
+  display: grid;
+  /* Auto-fill columns, minimum width 160px */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+}
+
+.related-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.related-card:hover {
+  transform: translateY(-4px); /* Lift effect */
+}
+
+/* Wrapper to control image size */
+.related-img-box {
+  width: 100%;
+  height: 180px; /* Fixed height for uniformity */
+  background: #f8f8f8;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+/* Ensure image stays small and fits */
+.related-img-box img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain; /* Prevents stretching */
+}
+
+.related-info h4 {
+  font-size: 14px;
+  color: #333;
+  margin: 0 0 5px 0;
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add "..." if too long */
+}
+
+.related-info p {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-cart, .btn-wishlist {
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+}
+
+.btn-cart {
+  background: #111;
+  color: white;
+  flex: 2;
+  justify-content: center;
+}
+
+.btn-wishlist {
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  flex: 1;
+  justify-content: center;
+}
+
+/* --- RELATED PRODUCTS --- */
+.related-section {
+    border-top: 1px solid #eee;
+    padding-top: 40px;
+}
+
+.related-title {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    color: #111;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.related-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.related-card:hover {
+    transform: translateY(-5px);
+}
+
+.related-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.related-info h4 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.related-info p {
+    font-weight: 700;
+    color: #111;
+}

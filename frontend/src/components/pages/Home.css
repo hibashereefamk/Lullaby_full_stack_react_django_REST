@@ -1,0 +1,146 @@
+/* Home.css */
+
+/* Main Container */
+.home-container {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+/* --- Hero Section (Slider) --- */
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 500px; /* Adjust height as needed */
+  overflow: hidden;
+  margin-top: 80px; /* Push down below fixed Navbar */
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 10%;
+  opacity: 0; 
+  height: 100%;  /* Changed from 500px or 50vh to 80% of screen height */
+    
+    /* Keep these to ensure it looks good */
+    background-size: cover;
+    background-position: top center;
+  background-repeat: no-repeat;
+}
+
+.hero-slide.active {
+  opacity: 1; /* Visible when active */
+}
+
+.hero-overlay {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  max-width: 500px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  color: rgb(74, 2, 105);
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.hero-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  background-color: #6A1B9A; /* Your Brand Purple */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.2s;
+}
+
+.hero-button:hover {
+  background-color: #4a148c; /* Darker purple on hover */
+  transform: scale(1.05);
+}
+
+/* --- Dots (Slider Indicators) --- */
+.dots-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: background-color 0.3s;
+}
+
+.dot.active {
+  background-color: white;
+  transform: scale(1.2);
+}
+
+/* --- Category Section --- */
+.section-container {
+  padding: 40px 10%;
+  text-align: center;
+}
+
+.section-heading {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.category-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+}
+
+.category-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.category-label {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}

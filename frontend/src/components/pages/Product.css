@@ -1,0 +1,287 @@
+/* --- LAYOUT STRUCTURE (Add this to top) --- */
+.main-layout {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* --- SIDEBAR STYLES --- */
+.sidebar {
+  width: 270px; /* Standard sidebar width */
+  background: white;
+  padding: 16px;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  flex-shrink: 0; /* Prevents sidebar from shrinking */
+  height: fit-content;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 15px;
+}
+
+.sidebar-header h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.filter-section {
+  margin-bottom: 25px;
+}
+
+.filter-section h4 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #878787;
+  margin-bottom: 10px;
+}
+
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-list li {
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #212121;
+  transition: color 0.2s;
+}
+
+.category-list li:hover {
+  color: #2874f0; /* Flipkart Blue */
+}
+
+.category-list li.active {
+  font-weight: 600;
+  color: #2874f0;
+}
+.price-blocks{
+  display: flex;
+  align-items: baseline; /* Align fonts by their baseline */
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* --- CONTENT AREA & TOP BAR --- */
+.content-area {
+  flex-grow: 1;
+}
+
+.top-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  background: white;
+  padding: 10px;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.sort-select {
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 4px;
+  outline: none;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .top-bar {
+    
+    flex-direction: column;
+  }
+}
+
+
+
+.page-wrapper {
+  background-color: #f1f3f6;
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+.products-container {
+  /* You can remove this class if using main-layout, or keep it */
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ... (Rest of your existing Product Card CSS) ... */
+
+/* Search Wrapper (Keep yours) */
+.search-wrapper {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  background: #f0f5ff;
+  border-radius: 4px;
+  padding: 8px 16px;
+  min-width: 200px;
+}
+
+.search-wrapper input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-card:hover {
+  box-shadow: 0 3px 16px 0 rgba(0,0,0,0.11);
+}
+
+.image-wrapper {
+  position: relative;
+  height: 200px;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.product-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.03);
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 12px;
+  right: 32px; /* Fixed: standard is closer to edge than 32px */
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #c2c2c2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+
+.wishlist-btn:hover {
+  color: #ff4343;
+  background: #fff;
+}
+
+.card-overlay {
+  position: absolute; /* Essential for overlay effect */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.9); /* Add bg so button is readable */
+  display: flex;
+  justify-content: center;
+}
+
+.product-card:hover .card-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.add-cart-btn {
+  width: 100%;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s;
+  background: #ff9f00;
+  color: white;
+}
+
+.product-details {
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.prdt-title {
+  font-size: 16px;
+  color: #212121;
+  font-weight: 500;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.discount-price {
+  font-size: 17px;
+  font-weight: 500;
+   color: #888;
+   text-decoration: line-through;
+  
+}
+.prdt-price {
+  font-size: 18px;
+  font-weight: 600;
+ color: #212121;
+  margin-left: 8px;
+}
+
+.add-cart-mini {
+  display: none;
+}
