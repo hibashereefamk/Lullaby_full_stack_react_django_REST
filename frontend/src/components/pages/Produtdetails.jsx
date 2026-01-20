@@ -4,6 +4,7 @@ import axios from "axios";
 import { ShoppingCart, Heart, ArrowLeft, Check } from "lucide-react";
 import Navbar from "./Navbar";
 import "./Produtdetails.css";
+import Rating from "./Rating";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -53,9 +54,9 @@ function ProductDetail() {
       };
 
       // Use the correct endpoint /api/cartitems/
-      await axios.post(
+      const response = await axios.post(
         "http://127.0.0.1:8000/api/cartitems/", 
-        { product_id: product.id, quantity: 1 },
+        { product_id: product.id, quantity: 1,size: selectedSize},
         config
       );
       if (response.status === 200) {
@@ -103,7 +104,7 @@ function ProductDetail() {
         
         {/* Back Button */}
         <button className="back-btn" onClick={() => navigate(-1)}>
-            <ArrowLeft size={20} /> Back
+            <ArrowLeft size={20} />
         </button>
 
         <div className="product-detail-card">
@@ -146,7 +147,9 @@ function ProductDetail() {
                                 ):null}
                             </button>
                         ))}
+                        
                     </div>
+                    <Rating style={{ justifyContent: 'flex-start' }} value={product.rating} text={`(${product.rating}k reviews)`} />
                 </div>
             )}
 

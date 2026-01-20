@@ -4,6 +4,7 @@ import { Search, Heart, ShoppingCart, Filter } from "lucide-react";
 import Navbar from "./Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import './Product.css';
+import Rating from "./Rating";
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -99,7 +100,7 @@ function Products() {
             },
         };
 
-        await axios.post(
+        const response = await axios.post(
             "http://127.0.0.1:8000/api/cartitems/", 
             { product_id: product.id, quantity: 1 }, 
             config 
@@ -276,7 +277,7 @@ function Products() {
             <span className="discount-price">
               ₹{product.price}
             </span>
-          )}
+          )}<Rating value={product.rating} text={`(${product.rating} k reviews)`} />
         </div>
       </div>
     </div>

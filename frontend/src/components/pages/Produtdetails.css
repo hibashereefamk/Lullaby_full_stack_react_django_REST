@@ -69,6 +69,19 @@
   text-decoration-color: #ef4444;
   opacity: 0.8;
 }
+.back-btn {
+  display: inline-flex;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #333;
+}
 
 .description {
   color: #555;

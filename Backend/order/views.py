@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions,status
+from rest_framework.response import Response
 from .models import Order, OrderItem, Address, Payment
 from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer, PaymentSerializer 
 
@@ -7,12 +8,11 @@ from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
+    http_method_names =['get','post','head','options']
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user).order_by('-created_at')
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 class OrderItemViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemSerializer
@@ -20,11 +20,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return OrderItem.objects.filter(order__user=self.request.user)
-    def perform_create(self, serializer):
-        order = serializer.validated_data['order']
-        if order.user != self.request.user:
-            raise permissions.PermissionDenied("You cannot add items to someone else's order.")
-        serializer.save()
+    
 
 class AddressViewSet(viewsets.ModelViewSet):
     serializer_class = AddressSerializer

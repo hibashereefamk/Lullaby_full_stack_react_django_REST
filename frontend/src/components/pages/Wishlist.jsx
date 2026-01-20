@@ -4,6 +4,7 @@ import { Trash2, ShoppingCart } from "lucide-react";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom"; 
 import "./Wishlist.css";
+import Rating from "./Rating";
 
 function Wishlist() {
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -12,7 +13,7 @@ function Wishlist() {
   // 1. Get Token
   const token = localStorage.getItem("access_token"); 
 
-  // 2. Config
+const handleViewProduct = (id) => navigate(`/products/${id}`);
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -49,7 +50,7 @@ function Wishlist() {
 
   const addToCart = async (productId) => {
     try {
-      await axios.post(
+      const response = await axios.post(
         "http://127.0.0.1:8000/api/cartitems/", 
         { product_id: productId, quantity: 1 }, 
         config
@@ -57,7 +58,7 @@ function Wishlist() {
       if (response.status === 200) {
             alert(response.data.message || "Product quantity increased!");
         } else if (response.status === 201) {
-            alert(`${product.name} added to cart!`);
+            alert(`item added to cart!`);
         }
     } catch (err) {
       console.error("Add to cart failed", err);
@@ -77,10 +78,13 @@ function Wishlist() {
             </div>
         ) : (
             <div className="product-grid">
-            {wishlistItems.map(item => (
+            {wishlistItems.map(item => {
+  const hasDiscount =item.product.discount_price !== null && item.product.discount_price > 0;
+  const displayPrice = hasDiscount? item.product.discount_price: item.product.price; 
+  return(
                 <div key={item.id} className="product-card wishlist-card">
                     {/* Image Area */}
-                    <div className="image-wrapper">
+                    <div className="image-wrapper" onClick={() => handleViewProduct(item.product.id)}>
                         {/* FIX: Use item.product.image */}
                         <img 
                             className="product-image" 
@@ -89,13 +93,18 @@ function Wishlist() {
                         />
                     </div>
 
-                    {/* Details Area */}
+                    
                     <div className="product-details">
-                        {/* FIX: Use item.product.name */}
+                      
                         <h3>{item.product.name}</h3>
-                        
-                        {/* FIX: Use item.product.price */}
-                        <p className="product-price">₹{item.product.price}</p>
+                        <p className="prdt-price">₹{displayPrice}</p>
+
+          {hasDiscount && (
+            <span className="discount-price">
+              ₹{item.product.price}
+            </span>
+          )}
+                        <Rating value={item.product.rating} text={`(${item.product.rating}k reviews)`} />
                         
                         <div className="card-actions">
                             <button 
@@ -117,7 +126,7 @@ function Wishlist() {
                         </div>
                     </div>
                 </div>
-            ))}
+            )})}
             </div>
         )}
       </div>

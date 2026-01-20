@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Trash2, Plus, Minus } from "lucide-react";
+import { Trash2, Plus, Minus, AlertCircle } from "lucide-react"; // Added AlertCircle for warning
 import Navbar from "./Navbar";
 import "./Cart.css";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
-  const token = localStorage.getItem("access_token"); 
+  const token = localStorage.getItem("access_token");
 
-  // 2. Config
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -21,12 +20,11 @@ function Cart() {
     fetchCart();
   }, []);
 
-  
   useEffect(() => {
     const newTotal = cartItems.reduce(
-  (acc, item) => acc + item.subtotal,
-  0
-);
+      (acc, item) => acc + item.subtotal,
+      0
+    );
     setTotal(newTotal);
   }, [cartItems]);
 
@@ -36,14 +34,33 @@ function Cart() {
       .catch(err => console.error("Error fetching cart", err));
   };
 
+  // --- NEW: Logic to Update Size ---
+  const updateSize = async (id, newSize) => {
+    try {
+      await axios.patch(
+        `http://127.0.0.1:8000/api/cartitems/${id}/`, 
+        { size: newSize }, 
+        config
+      );
+      
+      // IMPORTANT: We fetch the whole cart again because the backend might have
+      // "merged" this item with another existing item of the same size.
+      // Simple state updates won't catch that merge logic.
+      fetchCart(); 
+    } catch (err) {
+      console.error("Error updating size", err);
+      alert("Could not update size. It might be out of stock.");
+    }
+  };
+
   const updateQuantity = async (id, newQuantity) => {
     if (newQuantity < 1) return;
     try {
       await axios.patch(`http://127.0.0.1:8000/api/cartitems/${id}/`, { quantity: newQuantity }, config);
-      setCartItems(prev => prev.map(item => 
+      setCartItems(prev => prev.map(item =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       ));
-      fetchCart();
+      fetchCart(); // Fetch to ensure subtotals match backend
     } catch (err) {
       console.error("Error updating quantity", err);
     }
@@ -59,8 +76,13 @@ function Cart() {
   };
 
   const handleCheckout = () => {
+    // Validation: Check if any item has no size selected
+    const missingSizes = cartItems.some(item => !item.size && !item.variant); 
+    if (missingSizes) {
+      alert("Please select a size for all items before checking out.");
+      return;
+    }
     alert("Proceeding to checkout...");
-    // Redirect to checkout page or trigger API
   };
 
   return (
@@ -70,37 +92,68 @@ function Cart() {
         <h2>Shopping Cart ({cartItems.length} items)</h2>
 
         <div className="cart-layout">
-          {/* Cart Items List */}
           <div className="cart-items">
-            {cartItems.map(item =>{ const hasDiscount =
-    item.product_details.discount_price !== null && item.product_details.discount_price > 0;
-
-  const displayPrice = hasDiscount
-    ? item.product_details.discount_price
-    : item.product_details.price;
-
-  return(
+            {cartItems.map(item => {
+              const hasDiscount = item.product_details.discount_price !== null && item.product_details.discount_price > 0;
+              const displayPrice = hasDiscount ? item.product_details.discount_price : item.product_details.price;
               
-              <div key={item.id} className="cart-item">
-                <img src={item.product_details.image} alt={item.product_details.name} />
-                <div className="cart-info">
-                  <h3>{item.product_details.name}</h3>
-                  <p className="cart-price">₹{displayPrice}</p>
-                  <p className="item-total">Total: ₹{item.subtotal}</p>
+              // Helper to safely get the current size (Modify 'item.size' based on your serializer structure)
+              // If your serializer returns nested variant, use item.variant?.size
+              const currentSize = item.size || (item.variant ? item.variant.size : ""); 
+              
+              // Helper to get available sizes. 
+              // ASSUMPTION: Your product_details serializer includes a list like ["S", "M", "L"]
+              const availableSizes = item.product_details.sizes || []; 
 
-                </div>
-                
-                <div className="quantity-controls">
-                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)}><Minus size={16} /></button>
-                  <span>{item.quantity}</span>
-                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)}><Plus size={16} /></button>
-                </div>
+              return (
+                <div key={item.id} className="cart-item">
+                  <img src={item.product_details.image} alt={item.product_details.name} />
+                  
+                  <div className="cart-info">
+                    <h3>{item.product_details.name}</h3>
+                    
+                    {/* --- NEW: Size Dropdown --- */}
+                    <div className="size-selector">
+                      <label>Size: </label>
+                      <select 
+                        value={currentSize} 
+                        onChange={(e) => updateSize(item.id, e.target.value)}
+                        className={!currentSize ? "select-warning" : ""}
+                      >
+                        <option value="" disabled>Select Size</option>
+                        {availableSizes.length > 0 ? (
+                            availableSizes.map(size => (
+                                <option key={size} value={size}>{size}</option>
+                            ))
+                        ) : (
+                            <option disabled>No sizes</option>
+                        )}
+                      </select>
+                      
+                      {/* Warning if no size selected */}
+                      {!currentSize && (
+                        <span className="size-warning">
+                          <AlertCircle size={14} /> Required
+                        </span>
+                      )}
+                    </div>
 
-                <button className="remove-btn" onClick={() => removeItem(item.id)}>
-                  <Trash2 size={20} />
-                </button>
-              </div>
-            )})}
+                    <p className="cart-price">₹{displayPrice}</p>
+                    <p className="item-total">Total: ₹{item.subtotal}</p>
+                  </div>
+
+                  <div className="quantity-controls">
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}><Minus size={16} /></button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}><Plus size={16} /></button>
+                  </div>
+
+                  <button className="remove-btn" onClick={() => removeItem(item.id)}>
+                    <Trash2 size={20} />
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
           {/* Checkout Summary */}

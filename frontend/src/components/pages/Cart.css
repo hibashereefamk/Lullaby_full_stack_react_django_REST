@@ -207,3 +207,34 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 }
+/* Add inside Cart.css */
+
+.size-selector {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.size-selector select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Highlight the box red if no size is chosen */
+.size-selector select.select-warning {
+  border: 1px solid #e74c3c;
+  background-color: #fff5f5;
+}
+
+.size-warning {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: bold;
+}

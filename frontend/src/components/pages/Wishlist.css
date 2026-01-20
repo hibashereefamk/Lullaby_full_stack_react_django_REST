@@ -54,7 +54,7 @@
 /* Action Buttons Container */
 .card-actions {
   display: flex;
-  justify-content: flex-end; /* Pushes buttons to the right */
+  justify-content: space-between; /* Pushes buttons to the right */
   gap: 10px;
   margin-top: 15px;
   padding-top: 10px;
