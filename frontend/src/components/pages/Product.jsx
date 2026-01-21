@@ -1,6 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Search, Heart, ShoppingCart, Filter } from "lucide-react";
+import { Search, Heart, ShoppingCart, Filter,ChevronDown } from "lucide-react";
 import Navbar from "./Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import './Product.css';
@@ -11,14 +11,12 @@ import { useWishlist } from "../context/WishlistContext";
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  
-  // Filters
+  const [categories, setCategories] = useState([]); // Stores the list of options
+
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(""); 
+  const [selectedCategory, setSelectedCategory] = useState(); 
   const [selectedSection, setSelectedSection] = useState(""); 
   const [sortOrder, setSortOrder] = useState("");
-
   // 2. USE CONTEXT (This replaces the old 'user.fav' logic)
   const { toggleWishlist, isInWishlist } = useWishlist();
 
@@ -37,10 +35,18 @@ function Products() {
     if (location.state?.section) setSelectedSection(location.state.section);
   }, [location]);
 
-  useEffect(() => {
-    axios.get("http://127.0.0.1:8000/api/categories/").then(res => {
-        setCategories(res.data.results || res.data);
-    });
+ useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/categories/');
+        const data = await response.json();
+        setCategories(data); 
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -101,6 +107,13 @@ function Products() {
                         <li key={s.id} onClick={() => setSelectedSection(s.id)} className={selectedSection===s.id?"active":""}>{s.name}</li>
                     ))}
                 </ul>
+                <h4>Categories of products</h4>
+                <ul className="category-list">
+                    <li onClick={() => setSelectedCategory("")} className={!selectedCategory ? "active":""}>All</li>
+                    {categories.map(s => (
+                        <li key={s.id} onClick={() => setSelectedCategory(s.id)} className={selectedCategory ===s.id?"active":""}>{s.name}</li>
+                    ))}
+                </ul>
             </div>
         </aside>
 
@@ -110,7 +123,21 @@ function Products() {
                     <Search size={18} color="#666" />
                     <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
-                {/* ... Sort Dropdown ... */}
+                
+            
+            {/* [NEW FEATURE] Sort Button (Left of Search) */}
+            <div className="relative">
+              <select 
+                className="sort-button"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="default">Sort by</option>
+                <option value="lowToHigh">Price: Low to High</option>
+                <option value="highToLow">Price: High to Low</option>
+              </select>
+              <ChevronDown size={18} color="#666" />
+            </div>
             </div>
 
             <div className="product-grid">
