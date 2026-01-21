@@ -13,7 +13,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 from rest_framework import permissions
 from rest_framework import generics
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 
+@method_decorator(never_cache, name='dispatch')
 class sendOTPView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -40,7 +43,9 @@ class sendOTPView(APIView):
         )
 
         return Response({"message": "OTP sent successfully"}, status=status.HTTP_200_OK)
+    
 
+@method_decorator(never_cache, name='dispatch')
 class VerifyOTPView(APIView):
     def post(self,request):
          email=request.data.get('email')
@@ -57,7 +62,8 @@ class VerifyOTPView(APIView):
          except CustomUser.DoesNotExist:
               return Response({"message": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
          
-
+         
+@method_decorator(never_cache, name='dispatch')
 class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -84,7 +90,7 @@ class RegisterView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@method_decorator(never_cache, name='dispatch')
 class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -101,6 +107,7 @@ class LoginView(APIView):
             "name": user.name,
         })
     
+@method_decorator(never_cache, name='dispatch')    
 class LogoutView(APIView):
     permission_classes =(IsAuthenticated)
 
@@ -113,6 +120,7 @@ class LogoutView(APIView):
         except Exception as e:
             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(never_cache, name='dispatch')
 class UserProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]

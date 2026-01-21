@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Heart, ShoppingCart, LogIn, User, Home, Info, Package, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./Navbar.css"; // Don't forget to import the CSS file!
+import "./Navbar.css"; 
 
 function Navbar() {
   // const { cart } = useContext(updateContext);
