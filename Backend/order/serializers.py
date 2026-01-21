@@ -2,6 +2,8 @@ from .models import Order, OrderItem, Address, Payment
 from product.serializers import ProductSerializer, ProductVariantLiteSerializer
 from rest_framework import serializers
 from product.models import Cart
+from rest_framework import serializers
+from .models import Address
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -22,13 +24,27 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = ['order_number', 'created_at', 'total_amount', 'status']
 
 
-from rest_framework import serializers
-from .models import Address
+
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = ['id', 'full_name', 'phone_number', 'street_address', 'city', 'state', 'postal_code', 'country', 'address_type', 'is_default']
+
+    def validate_phone_number(self, value):
+        if not value.isdigit():
+            raise serializers.ValidationError("Phone number must contain only digits.")
+        if len(value) != 10 :
+            raise serializers.ValidationError("Phone number is not valid")
+        return value
+    def validate_postal_code(self,value):
+        if not value.isdigit():
+            raise serializers.ValidationError("Postal code must contain only digits.")
+        if len(value) != 6 :
+            raise serializers.ValidationError("Postal code must contain 6 digit")
+        return value
+        
+        
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)
@@ -64,7 +80,8 @@ class OrderSerializer(serializers.ModelSerializer):
         except Address.DoesNotExist:
             raise serializers.ValidationError({'address_id': "Invalid address selected."})
         
-        address_text = f"{address_obj.street}, {address_obj.city}, {address_obj.state}, {address_obj.postal_code}, {address_obj.country}"
+        
+        address_text = f"{address_obj.street_address}, {address_obj.city}, {address_obj.state}, {address_obj.postal_code}, {address_obj.country}"
         
         # 2. Validate Cart
         try:

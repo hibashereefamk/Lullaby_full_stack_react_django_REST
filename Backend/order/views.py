@@ -3,6 +3,9 @@ from rest_framework import viewsets, permissions,status
 from rest_framework.response import Response
 from .models import Order, OrderItem, Address, Payment
 from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer, PaymentSerializer 
+from rest_framework import generics, permissions
+from .models import Address
+from .serializers import AddressSerializer
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -22,9 +25,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         return OrderItem.objects.filter(order__user=self.request.user)
     
 
-from rest_framework import generics, permissions
-from .models import Address
-from .serializers import AddressSerializer
+
 
 class AddressListCreateView(generics.ListCreateAPIView):
     serializer_class = AddressSerializer
