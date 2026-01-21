@@ -44,9 +44,6 @@ class AddressSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Postal code must contain 6 digit")
         return value
     
-        
-        
-
 class OrderItemSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)
     variant_details = ProductVariantLiteSerializer(source='variant', read_only=True)
