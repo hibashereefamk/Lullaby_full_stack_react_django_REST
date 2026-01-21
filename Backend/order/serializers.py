@@ -43,6 +43,7 @@ class AddressSerializer(serializers.ModelSerializer):
         if len(value) != 6 :
             raise serializers.ValidationError("Postal code must contain 6 digit")
         return value
+    
         
         
 
