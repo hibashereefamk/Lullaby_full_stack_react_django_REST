@@ -96,7 +96,7 @@ function Checkout() {
     try {
       const res = await axios.post("http://127.0.0.1:8000/api/addresses/", newAddress, config);
 
-      // Add the new address to the list and select it
+      
       setAddresses([...addresses, res.data]);
       setSelectedAddressId(res.data.id);
 

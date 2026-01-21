@@ -53,7 +53,7 @@ function Home() {
               style={{ backgroundImage: `url(${promo.image})`, }} 
             >
               <div className="hero-overlay">
-                <h1 className="hero-title">Welcome to Lullaby</h1>
+                <h1 className="hero-title">Welcome to lullaby</h1>
                 <Link to="/products">
                   <button className="hero-button">
                     Shop Now <ArrowRight size={18} />
@@ -82,7 +82,7 @@ function Home() {
 
       {/* CATEGORY SECTION */}
       <div className="section-container">
-        <h2 className="section-heading">Shop by Category</h2>
+        <h2 className="section-heading"></h2>
         <div className="category-grid">
           {categories.length > 0 ? (
             categories.map((cat) => (

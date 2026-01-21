@@ -1,14 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, ShoppingCart, LogIn,User, Home, Info, Package, ShoppingBag } from "lucide-react";
-import { useEffect,useState } from "react";
+import { Heart, ShoppingCart, LogIn, User, Home, Info, Package, ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import "./Navbar.css"; // Don't forget to import the CSS file!
+
 function Navbar() {
-//   const { cart } = useContext(updateContext);
-//   const { favorite } = useContext(UpdatefavContext);
+  // const { cart } = useContext(updateContext);
+  // const { favorite } = useContext(UpdatefavContext);
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
-  const isLoggedIn = !!localStorage.getItem("access_token"); 
+  const isLoggedIn = !!localStorage.getItem("access_token");
+
   useEffect(() => {
     if (isLoggedIn) {
       const fetchUser = async () => {
@@ -17,101 +20,71 @@ function Navbar() {
           const res = await axios.get("http://127.0.0.1:8000/api/profile/", {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setUsername(res.data.name); // Store the username from backend
+          setUsername(res.data.name); 
         } catch (err) {
           console.error("Failed to fetch user", err);
         }
       };
       fetchUser();
     }
-  }, [isLoggedIn]);// Returns true if user exists
-
+  }, [isLoggedIn]);
 
   return (
-    <div
-      className="navbar"
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "10px 30px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-        width: "100%",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 1000,
-        height: "80px",
-        boxSizing: "border-box"
-      }}
-    >
+    <div className="navbar">
       
       {/* LEFT SECTION: LOGO + MENU LINKS */}
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+      <div className="nav-left">
         {/* Logo Image */}
-        <Link to="/">
-          <h2 style={{fontFamily:"'Poppins', sans-serif",fontWeight: "700",fontSize: "1.8rem"}}>LULLABY</h2>
-          
+        <Link to="/" className="logo-soft">
+          LULLABY
         </Link>
 
         {/* Navigation Links */}
-        <Link to="/" style={linkStyle}>
-          <Home size={18}/> HOME
+        <Link to="/" className="nav-link">
+          <Home size={18} /> HOME
         </Link>
-        <Link to="/products" style={linkStyle}>
+        <Link to="/products" className="nav-link">
           <Package size={18} /> PRODUCTS
         </Link>
-        <Link to="/order" style={linkStyle}>
+        <Link to="/order" className="nav-link">
           <ShoppingBag size={18} /> MY ORDER
         </Link>
-        <Link to="/about" style={linkStyle}>
+        <Link to="/about" className="nav-link">
           <Info size={18} /> ABOUT
         </Link>
       </div>
 
-      
       {/* RIGHT SECTION: ICONS + LOGIN BUTTON */}
-      <div style={{ display: "flex", alignItems: "center", gap: "25px" }}>
+      <div className="nav-right">
         
         {/* Wishlist Icon */}
-        <Link to="/wishlists" style={linkStyle}>
-          <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-            <Heart
-              size={24} 
-            //   stroke={favorite > 0 ? "red" : "black"}
-            //   fill={favorite > 0 ? "red" : "none"}
-            />
-            {/* {favorite > 0 && (
-                <span style={badgeStyle}>{favorite}</span>
-            )} */}
+        <Link to="/wishlists" className="nav-link">
+          <div className="icon-wrapper">
+            <Heart size={24} stroke="black" fill="black" />
+            {/* {favorite > 0 && <span className="badge">{favorite}</span>} */}
           </div>
         </Link>
 
         {/* Cart Icon */}
-        <Link to="/cart" style={linkStyle}>
-          <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-            <ShoppingCart size={24} color="black" />
-            {/* {cart > 0 && (
-              <span style={badgeStyle}>{cart}</span>
-            )} */}
+        <Link to="/cart" className="nav-link">
+          <div className="icon-wrapper">
+            <ShoppingCart size={24} stroke="black" fill="black" />
+            {/* {cart > 0 && <span className="badge">{cart}</span>} */}
           </div>
         </Link>
 
+        {/* Auth Check */}
         {isLoggedIn ? (
-          <Link to="/profile" style={linkStyle} title="My Profile">
-             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <User size={24} color="black" />
-                {/* Display the username here */}
-                <span style={{ fontSize: "12px", fontWeight: "bold" }}>Profile</span>
-             </div>
+          <Link to="/profile" className="nav-link" title="My Profile">
+            <div className="profile-wrapper">
+              <User size={24} stroke="black" fill="black" />
+              {/* Display username if you want, or just "Profile" */}
+              <span className="profile-text">Profile</span>
+            </div>
           </Link>
         ) : (
-          <div
-            style={{ border: "2px solid black", borderRadius: "5px", padding: "5px 15px", cursor: "pointer" }}
-            onClick={() => navigate("/login")}
-          >
-            <span style={{ ...linkStyle, fontSize: "14px" }}>
+          <div className="login-btn" onClick={() => navigate("/login")}>
+            <span className="nav-link" style={{ gap: '5px' }}>
               <LogIn size={18} /> LOGIN
             </span>
           </div>
@@ -121,33 +94,5 @@ function Navbar() {
     </div>
   );
 }
-
-// STYLES
-const linkStyle = {
-  textDecoration: "none",
-  color: "black",
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  fontWeight: "600",
-  fontSize: "14px",
-  fontFamily: "Arial, sans-serif"
-};
-
-const badgeStyle = {
-    position: "absolute",
-    top: "-8px",
-    right: "-10px",
-    background: "red",
-    color: "white",
-    borderRadius: "50%",
-    width: "18px",
-    height: "18px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: "10px",
-    fontWeight: "bold",
-};
 
 export default Navbar;
