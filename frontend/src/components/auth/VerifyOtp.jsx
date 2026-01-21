@@ -64,8 +64,8 @@ function VerifyOtp() {
   };
 
   return (
-    <div className="auth-container">
-      <form className="auth-form" onSubmit={handleVerifyOtp}>
+    <div className="otp-container">
+      <form className="otp-form" onSubmit={handleVerifyOtp}>
         <h2>Enter OTP</h2>
         <p>We sent a code to: <strong>{email}</strong></p>
         

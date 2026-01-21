@@ -5,6 +5,7 @@ from .serializers import ProductSerializer, PromotionSerializer,CategorySerializ
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 class PromotionViewSet(viewsets.ModelViewSet):
     queryset = Promotion.objects.filter(is_active=True) # Only show active slides
@@ -50,29 +51,76 @@ class CartViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-
 class CartItemViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        # Ensure we only fetch items belonging to the current user's cart
         return CartItem.objects.filter(cart__user=self.request.user).order_by('-added_at')
 
-    # 👇 PASTE THIS METHOD INSIDE THE CLASS 👇
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        # Get or create the cart for the user
+        cart, _ = Cart.objects.get_or_create(user=user)
+
+        # Extract data from request
+        product_id = request.data.get('product_id')
+        size = request.data.get('size') 
+        
+        # Default quantity to 1 if not provided
+        try:
+            quantity = int(request.data.get('quantity', 1))
+        except (ValueError, TypeError):
+            quantity = 1
+
+        if not product_id:
+            return Response({'error': "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the Product
+        product = get_object_or_404(Product, id=product_id)
+
+        # Get the Variant (if size is provided)
+        variant = None
+        if size:
+            try:
+                variant = ProductVariant.objects.get(product=product, size=size)
+            except ProductVariant.DoesNotExist:
+                return Response({'error': f"Size '{size}' not available for this product"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if this exact item (Product + Variant) already exists in the cart
+        cart_item = CartItem.objects.filter(cart=cart, product=product, variant=variant).first()
+
+        if cart_item:
+            # Update quantity if it exists
+            cart_item.quantity += quantity
+            cart_item.save()
+            return Response({"message": "Quantity updated"}, status=status.HTTP_200_OK)
+        else:
+            # Create new item if it doesn't exist
+            new_item = CartItem.objects.create(
+                cart=cart, 
+                product=product, 
+                variant=variant, 
+                quantity=quantity
+            )
+            serializer = self.get_serializer(new_item)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def partial_update(self, request, *args, **kwargs):
         cart_item = self.get_object()
         
-        # 1. Check if the request contains 'size'
+        # 1. Check if the request contains 'size' update
         if 'size' in request.data:
             size_name = request.data['size']
             product = cart_item.product
             
-            # 2. Find the variant for this size
+            # 2. Find the variant for this new size
             try:
                 variant = ProductVariant.objects.get(product=product, size=size_name)
                 
-                # 3. Check if this causes a duplicate in the cart
-                # (e.g., merging "No Size" item into an existing "Size M" item)
+                # 3. Check if an item with this new size ALREADY exists in the cart
+                # (We exclude the current item 'cart_item.pk' to avoid comparing it to itself)
                 existing_item = CartItem.objects.filter(
                     cart=cart_item.cart, 
                     product=product, 
@@ -80,21 +128,24 @@ class CartItemViewSet(viewsets.ModelViewSet):
                 ).exclude(pk=cart_item.pk).first()
 
                 if existing_item:
-                    # Merge quantity and delete current item
+                    # MERGE: Add current quantity to the existing item's quantity
                     existing_item.quantity += cart_item.quantity
                     existing_item.save()
+                    
+                    # Delete the current item since it's now merged
                     cart_item.delete()
+                    
                     # Return the updated existing item
                     serializer = self.get_serializer(existing_item)
                     return Response(serializer.data)
                 
                 else:
-                    # Update the current item's variant
+                    # UPDATE: No duplicate found, just switch the variant
                     cart_item.variant = variant
                     cart_item.save()
 
             except ProductVariant.DoesNotExist:
                 return Response({'error': 'Size not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 4. Handle other updates (like quantity) normally
+        # 4. Handle standard updates (like changing quantity buttons in cart)
         return super().partial_update(request, *args, **kwargs)

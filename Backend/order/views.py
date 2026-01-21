@@ -22,16 +22,23 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         return OrderItem.objects.filter(order__user=self.request.user)
     
 
-class AddressViewSet(viewsets.ModelViewSet):
+from rest_framework import generics, permissions
+from .models import Address
+from .serializers import AddressSerializer
+
+class AddressListCreateView(generics.ListCreateAPIView):
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        # Only return addresses for the currently logged-in user
         return Address.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        # Automatically assign the new address to the logged-in user
         serializer.save(user=self.request.user)
 
+        
 class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]

@@ -1,32 +1,31 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, ShoppingCart, LogIn, LogOut, Home, Info, Package, ShoppingBag } from "lucide-react";
-
-
-// import lullaby_logo from "../../assets/lullaby_logo.jpeg";
-
-// import { UpdatefavContext } from "../components/whishlistcounter";
-// import { updateContext } from "../components/cartcounter"; 
-
-// FIX 1: Import the logo correctly
-// If your image is in src/images/logo.png, use this:
-// import logo from "../images/logo.png"; 
-// If it is in src/assets/, keep it as "../assets/logo.png"
-
+import { Heart, ShoppingCart, LogIn,User, Home, Info, Package, ShoppingBag } from "lucide-react";
+import { useEffect,useState } from "react";
+import axios from "axios";
 function Navbar() {
 //   const { cart } = useContext(updateContext);
 //   const { favorite } = useContext(UpdatefavContext);
   const navigate = useNavigate();
 
-  // FIX 2: Check for user login status safely
-  // It is better to check if the token or user object exists
-  const isLoggedIn = !!localStorage.getItem("user"); // Returns true if user exists
+  const [username, setUsername] = useState("");
+  const isLoggedIn = !!localStorage.getItem("access_token"); 
+  useEffect(() => {
+    if (isLoggedIn) {
+      const fetchUser = async () => {
+        try {
+          const token = localStorage.getItem("access_token");
+          const res = await axios.get("http://127.0.0.1:8000/api/profile/", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setUsername(res.data.name); // Store the username from backend
+        } catch (err) {
+          console.error("Failed to fetch user", err);
+        }
+      };
+      fetchUser();
+    }
+  }, [isLoggedIn]);// Returns true if user exists
 
-  const handleLogout = () => {
-    localStorage.removeItem("user"); // Clear user data
-    localStorage.removeItem("token"); // Clear token if you have one
-    window.location.reload(); // Refresh to update UI immediately
-    // Or use navigate('/login') if you have a global auth state context
-  };
 
   return (
     <div
@@ -99,22 +98,24 @@ function Navbar() {
           </div>
         </Link>
 
-        {/* Login / Logout Button */}
-        <div
-          style={{
-            border: "2px solid black",
-            borderRadius: "5px",
-            padding: "5px 15px",
-            cursor: "pointer",
-            transition: "0.3s"
-          }}
-          onClick={isLoggedIn ? handleLogout : () => navigate("/login")}
-        >
-          <span style={{ ...linkStyle, fontSize: "14px" }}>
-            {isLoggedIn ? <LogOut size={18} /> : <LogIn size={18} />}
-            {isLoggedIn ? " LOGOUT" : " LOGIN"}
-          </span>
-        </div>
+        {isLoggedIn ? (
+          <Link to="/profile" style={linkStyle} title="My Profile">
+             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <User size={24} color="black" />
+                {/* Display the username here */}
+                <span style={{ fontSize: "12px", fontWeight: "bold" }}>Profile</span>
+             </div>
+          </Link>
+        ) : (
+          <div
+            style={{ border: "2px solid black", borderRadius: "5px", padding: "5px 15px", cursor: "pointer" }}
+            onClick={() => navigate("/login")}
+          >
+            <span style={{ ...linkStyle, fontSize: "14px" }}>
+              <LogIn size={18} /> LOGIN
+            </span>
+          </div>
+        )}
 
       </div>
     </div>

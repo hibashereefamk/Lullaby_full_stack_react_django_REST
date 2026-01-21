@@ -3,13 +3,16 @@ from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from .models import CustomUser
 from django.utils import timezone
 from .utils import generate_otp,is_otp_expired
 from .models import CustomUser
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer,UserProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.conf import settings 
+from django.conf import settings
+from rest_framework import permissions
+from rest_framework import generics
 
 class sendOTPView(APIView):
     def post(self, request):
@@ -87,9 +90,7 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # 3. Get the user object that the serializer validated
         user = serializer.validated_data['user']
-        # 4. Create tokens
         refresh = RefreshToken.for_user(user)
 
         return Response({
@@ -99,3 +100,23 @@ class LoginView(APIView):
             "email": user.email,
             "name": user.name,
         })
+    
+class LogoutView(APIView):
+    permission_classes =(IsAuthenticated)
+
+    def post(self,request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Successfully logged out"}, status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        
+        return self.request.user

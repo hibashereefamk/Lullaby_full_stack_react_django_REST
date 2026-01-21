@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./Register.css";
 import axios from'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link} from "react-router-dom";
+
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -60,6 +61,15 @@ const navigate=useNavigate()
         />
 
         <button type="submit">Login</button>
+        <div style={{ textAlign: "center", marginTop: "15px" }}>
+          <p>
+            Don't have an account? 
+            <Link to="/register" style={{ marginLeft: "5px", color: "#007bff" }}>
+              Register
+            </Link>
+          </p>
+        </div>
+
       </form>
     </div>
   );

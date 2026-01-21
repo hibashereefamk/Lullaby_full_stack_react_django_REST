@@ -3,12 +3,13 @@ import axios from "axios";
 import { Trash2, Plus, Minus, AlertCircle } from "lucide-react"; // Added AlertCircle for warning
 import Navbar from "./Navbar";
 import "./Cart.css";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const token = localStorage.getItem("access_token");
-
+  const navigate = useNavigate()
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -43,9 +44,6 @@ function Cart() {
         config
       );
       
-      // IMPORTANT: We fetch the whole cart again because the backend might have
-      // "merged" this item with another existing item of the same size.
-      // Simple state updates won't catch that merge logic.
       fetchCart(); 
     } catch (err) {
       console.error("Error updating size", err);
@@ -74,16 +72,44 @@ function Cart() {
       console.error("Error removing item", err);
     }
   };
+// In Cart.jsx
 
-  const handleCheckout = () => {
-    // Validation: Check if any item has no size selected
-    const missingSizes = cartItems.some(item => !item.size && !item.variant); 
+const handleCheckout = async () => {
+    const missingSizes = cartItems.some(item => {
+        const hasVariants = item.product_details.sizes && item.product_details.sizes.length > 0;
+        const noSizeSelected = !item.size && (!item.variant || !item.variant.size);
+        return hasVariants && noSizeSelected;
+    });
+
     if (missingSizes) {
-      alert("Please select a size for all items before checking out.");
-      return;
+        alert("Please select a size for all items before checking out.");
+        return;
     }
-    alert("Proceeding to checkout...");
-  };
+
+    
+    try {
+        // Note: We use /api/cart/ here, not /api/cartitems/
+        // This hits CartViewSet, which uses CartSerializer to return 'total_price'
+        const response = await axios.get("http://127.0.0.1:8000/api/cart/", config);
+        
+        // Since ViewSet returns a list, we take the first cart
+        const cartData = Array.isArray(response.data) ? response.data[0] : response.data;
+
+        if (!cartData || !cartData.items || cartData.items.length === 0) {
+            alert("Your cart is empty or invalid.");
+            return;
+        }
+
+        // 3. Redirect with Data
+        // We pass 'cartData' in the navigation state
+        navigate("/checkout", { state: { cart: cartData } });
+
+    } catch (err) {
+        console.error("Checkout Error:", err);
+        alert("Could not initiate checkout. Please try again.");
+    }
+};
+  
 
   return (
     <div className="page-wrapper">

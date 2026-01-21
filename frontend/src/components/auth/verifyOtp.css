@@ -1,7 +1,7 @@
 /* VerifyOtp.css */
 
 /* Centers the form in the middle of the screen */
-.auth-container {
+.otp-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,7 +10,7 @@
 }
 
 /* The white card styling */
-.auth-form {
+.otp-form {
   background: #ffffff;
   padding: 2.5rem;
   border-radius: 12px;
@@ -21,27 +21,27 @@
 }
 
 /* Heading style */
-.auth-form h2 {
+.otp-form h2 {
   margin-bottom: 10px;
   color: #333;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* The paragraph showing the email */
-.auth-form p {
+.otp-form p {
   color: #666;
   font-size: 0.95rem;
   margin-bottom: 25px;
   line-height: 1.5;
 }
 
-.auth-form strong {
+.otp-form strong {
   color: #2c3e50;
   font-weight: 600;
 }
 
 /* Specific styling for the OTP Input */
-.auth-form input {
+.otp-form input {
   width: 100%;
   padding: 12px 15px;
   margin-bottom: 20px;
@@ -51,19 +51,18 @@
   transition: border-color 0.3s ease;
   
   /* OTP SPECIFIC STYLES */
-  text-align: center;    /* Type from the center */
-  letter-spacing: 8px;   /* Space out the numbers */
+  text-align: center;    /* Type from the center */   /* Space out the numbers */
   font-weight: bold;
 }
 
 /* Input focus effect */
-.auth-form input:focus {
+.otp-form input:focus {
   outline: none;
   border-color: #4a90e2; /* Blue border on click */
 }
 
 /* Button Styling */
-.auth-form button {
+.otp-form button {
   width: 100%;
   padding: 14px;
   background-color: #4a90e2;
@@ -76,6 +75,6 @@
   transition: background-color 0.3s ease;
 }
 
-.auth-form button:hover {
+.otp-form button:hover {
   background-color: #357abd;
 }

@@ -9,8 +9,10 @@ import Products from "./components/pages/Product";
 import ProductDetail from "./components/pages/Produtdetails";
 import Wishlist from "./components/pages/Wishlist";
 import Cart from "./components/pages/Cart";
-
-
+import Checkout from "./components/pages/checkoutpage";
+import OrderSuccess from "./components/pages/OrderSuccess";
+import Profile from "./components/pages/Profile";
+import Order from "./components/pages/order";
 function App() {
  
   
@@ -26,6 +28,13 @@ function App() {
         <Route path="/products/:id" element={<ProductDetail/>} />
         <Route path="/wishlists" element={<Wishlist/>} />
         <Route path="/cart" element={<Cart/>} />
+        <Route path="/checkout" element={<Checkout/>} />
+        <Route path="/order-success" element={<OrderSuccess/>} />
+        <Route path="/profile" element={<Profile/>} />
+        <Route path="/order" element={<Order/>} />
+        
+
+
 
       </Routes>
     </BrowserRouter>

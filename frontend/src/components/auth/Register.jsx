@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Register.css"
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import axios from "axios";
 
 function Register() {
@@ -73,6 +73,16 @@ function Register() {
         />
 
         <button type="submit">Register</button>
+      <div style={{ textAlign: "center", marginTop: "15px" }}>
+          <p>
+            Don you have an account? 
+            <Link to="/login" style={{ marginLeft: "5px", color: "#007bff" }}>
+              Login
+            </Link>
+          </p>
+        </div>
+        {/* --- NEW CODE ENDS HERE --- */}
+
       </form>
     </div>
   );

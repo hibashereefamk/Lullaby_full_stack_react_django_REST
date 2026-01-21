@@ -111,7 +111,7 @@ class CartItem(models.Model):
     variant = models.ForeignKey(ProductVariant, on_delete=models.SET_NULL, null=True, blank=True)
     added_at = models.DateTimeField(auto_now_add=True)
     class Meta:
-       unique_together = ('cart', 'product')
+       unique_together = ('cart', 'product','variant')
 
 
     def __str__(self):

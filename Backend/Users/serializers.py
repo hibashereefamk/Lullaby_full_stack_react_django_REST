@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from .models import CustomUser
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,get_user_model
 from rest_framework.exceptions import AuthenticationFailed
+
+user = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -23,7 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=CustomUser
-        fields=['id','name','email','role','phone_number','profile_picture']
+        fields=['id','name','email','role','phone_number', 'profile_picture']
 
 class LoginSerializer(serializers.Serializer):
     email =serializers.EmailField()
@@ -41,3 +43,12 @@ class LoginSerializer(serializers.Serializer):
         return{
             'user':user
         }
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField( read_only=True)
+    email = serializers.CharField( read_only=True)
+    date_joined = serializers.DateTimeField( read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username','name', 'email','profile_picture', 'phone_number','bio',  'date_joined']
