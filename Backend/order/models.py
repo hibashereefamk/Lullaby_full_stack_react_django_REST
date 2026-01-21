@@ -19,7 +19,7 @@ class Address(models.Model):
     is_default = models.BooleanField(default=False)
     address_type = models.CharField(choices=ADDRESS_TYPE_CHOICES,max_length=10, default='home')
     def __str__(self):
-        return f"{self.street}, {self.city}, {self.country}"
+        return f"{self.street_address}, {self.city}, {self.country}"
     
     def save(self, *args, **kwargs):
         if self.is_default:
@@ -47,7 +47,7 @@ class Order(models.Model):
             self.order_number = str(uuid.uuid4()).split('-')[0].upper()
         super().save(*args, **kwargs)
     def __str__(self):
-        return self.order.order_number
+        return self.order_number
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)

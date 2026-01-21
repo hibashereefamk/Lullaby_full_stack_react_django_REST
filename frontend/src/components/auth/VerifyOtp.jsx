@@ -55,7 +55,7 @@ function VerifyOtp() {
       alert("A new OTP has been sent to your email.");
       
       // Reset the timer and disable the button again
-      setTimer(60);
+      setTimer(5*60);
       setCanResend(false);
     } catch (error) {
       console.error("Error resending OTP:", error);

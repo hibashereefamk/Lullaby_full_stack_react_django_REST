@@ -21,10 +21,11 @@ class sendOTPView(APIView):
     def post(self, request):
         email = request.data.get('email')
         
-        # username = email.split('@')[0] 
+        if not email:
+            return Response({'error':"Email isrequired"},status=status.HTTP_400_BAD_REQUEST) 
         user, created = CustomUser.objects.get_or_create(
-        # email=email, 
-        # defaults={'username': username}
+        email=email,
+        defaults={"usrname":email.slip('@')[0]}
 )
         
         
@@ -33,15 +34,16 @@ class sendOTPView(APIView):
         user.otp_created = timezone.now()
         user.save()
 
-        
-        send_mail(
-            subject="Your OTP Code",
-            message=f"Your OTP code is: {otp}",
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[email],
-            fail_silently=False
-        )
-
+        try:
+            send_mail(
+                subject="Your OTP Code",
+                message=f"Your OTP code is: {otp}",
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False
+            )
+        except Exception as e:
+            return Response({'error':"failed to email.Please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response({"message": "OTP sent successfully"}, status=status.HTTP_200_OK)
     
 
@@ -109,7 +111,7 @@ class LoginView(APIView):
     
 @method_decorator(never_cache, name='dispatch')    
 class LogoutView(APIView):
-    permission_classes =(IsAuthenticated)
+    permission_classes =[IsAuthenticated]
 
     def post(self,request):
         try:

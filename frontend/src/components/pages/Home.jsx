@@ -79,6 +79,21 @@ function Home() {
           ))}
         </div>
       </div>
+      <div className="promo-container">
+      <div className="promo-scrolling-text">
+        <span>
+  🔥 MEGA CLEARANCE SALE: UP TO 60% OFF 
+  &nbsp;&nbsp; • &nbsp;&nbsp; 
+  🧸 BUY 2 GET 1 FREE ON ALL PLUSH TOYS 
+  &nbsp;&nbsp; • &nbsp;&nbsp; 
+  ⚡ FLASH DEAL: DIAPER BAGS STARTING AT $19.99 
+  &nbsp;&nbsp; • &nbsp;&nbsp; 
+  💳 EXTRA 10% DISCOUNT ON FIRST APP ORDER 
+  &nbsp;&nbsp; • &nbsp;&nbsp; 
+  USE CODE: <strong>SUPERMOM</strong> FOR A MYSTERY GIFT! 🎁
+</span>
+      </div>
+    </div>
 
       {/* CATEGORY SECTION */}
       <div className="section-container">

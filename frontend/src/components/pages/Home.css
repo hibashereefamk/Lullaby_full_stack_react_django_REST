@@ -144,3 +144,34 @@
   font-weight: bold;
   color: #333;
 }
+
+.promo-container {
+  background: linear-gradient(90deg, #6a1b9a 0%, #8e24aa 100%); /* Gradient Purple */
+  color: white;
+  text-align: center;
+  padding: 15px 20px;
+  margin-bottom: 25px;
+  display: flex;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  border-top: 4px solid #f3e5f5; /* Light border for separation */
+  border-bottom: 4px solid #f3e5f5;
+}
+
+.promo-text {
+  font-family: sans-serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.coupon-code {
+  background-color: white;
+  color: #6a1b9a;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-weight: 800;
+}
