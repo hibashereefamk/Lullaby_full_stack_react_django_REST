@@ -3,6 +3,14 @@ from .models import CustomUser
 from django.contrib.auth import authenticate,get_user_model
 from rest_framework.exceptions import AuthenticationFailed
 
+from rest_framework import serializers
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
+from .models import CustomUser
+
+
+
 user = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -52,3 +60,42 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username','name', 'email','profile_picture', 'phone_number','bio',  'date_joined']
+
+class ResetPasswordRequestSerializer(serializers.Serializer):
+    email =serializers.EmailField(min_length = 2)
+
+    class Meta:
+        fields =['email']
+    def validate(self, attrs):
+        email = attrs['email']
+        if not CustomUser.objects.filter(email=email).exists():
+            raise serializers.ValidationError('User with this email does not exist')
+        return attrs
+    
+class SetNewPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=6, write_only=True)
+    token = serializers.CharField(write_only=True)
+    uidb64 = serializers.CharField(write_only=True)
+
+    class Meta:
+        fields = ['password', 'token', 'uidb64']
+
+    def validate(self, attrs):
+        try:
+            password = attrs.get('password')
+            token = attrs.get('token')
+            uidb64 = attrs.get('uidb64')
+
+            # Decode the user ID
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = CustomUser.objects.get(id=id)
+
+            # Check if the token is valid for this user
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise serializers.ValidationError('The reset link is invalid or expired', 401)
+
+            user.set_password(password)
+            user.save()
+            return user
+        except Exception as e:
+            raise serializers.ValidationError('The reset link is invalid', 401)

@@ -59,7 +59,11 @@ const navigate=useNavigate()
           onChange={handleChange}
           required
         />
-
+        <div style={{ margin: '10px 0', textAlign: 'right' }}>
+                    <Link to="/request-reset" style={{ color: 'blue', textDecoration: 'none' }}>
+                        Forgot Password?
+                    </Link>
+        </div>
         <button type="submit">Login</button>
         <div style={{ textAlign: "center", marginTop: "15px" }}>
           <p>

@@ -20,6 +20,10 @@ function Products() {
   // 2. USE CONTEXT (This replaces the old 'user.fav' logic)
   const { toggleWishlist, isInWishlist } = useWishlist();
 
+  const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const pageSize = 10;
+
   const sections = [
     { id: "BOY", name: "Boy" },
     { id: "GIRL", name: "Girl" },
@@ -40,32 +44,70 @@ function Products() {
       try {
         const response = await fetch('http://127.0.0.1:8000/api/categories/');
         const data = await response.json();
-        setCategories(data); 
+        setCategories(Array.isArray(data) ? data : data.results); 
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
-
     fetchCategories();
   }, []);
 
+  const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(prev => prev + 1);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentPage > 1) {
+            setCurrentPage(prev => prev - 1);
+        }
+    };
+
+  // --- FIX: Reset to Page 1 when filters change ---
+  // If user searches for something new, they should go back to the first page.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedCategory, selectedSection, sortOrder]);
+
+
+  // --- FIX: The Main Fetch Effect ---
   useEffect(() => {
     const fetchProducts = async () => {
-        let url = "http://127.0.0.1:8000/api/products/?";
-        const params = [];
-        if (search) params.push(`search=${search}`);
-        if (selectedCategory) params.push(`category=${selectedCategory}`);
-        if (selectedSection) params.push(`section=${selectedSection}`);
-        if (sortOrder === "lowToHigh") params.push("ordering=price");
-        if (sortOrder === "highToLow") params.push("ordering=-price");
-        
-        const response = await axios.get(url + params.join("&"));
-        setProducts(response.data.results || response.data);
+        try {
+            // Construct params object for cleaner code
+            const params = {
+                page: currentPage, // FIX: Use the state variable, not 'page'
+                search: search,
+                category: selectedCategory,
+                section: selectedSection,
+            };
+
+            // Add sorting if selected
+            if (sortOrder === "lowToHigh") params.ordering = "price";
+            if (sortOrder === "highToLow") params.ordering = "-price";
+
+            const response = await axios.get('http://127.0.0.1:8000/api/products/', { params });
+
+            // FIX: Handle the paginated response structure
+            if (response.data.results) {
+                setProducts(response.data.results);
+                
+               
+                const totalCount = response.data.count;
+                setTotalPages(Math.ceil(totalCount / pageSize));
+            } else {
+                
+                setProducts(response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching products", error);
+        }
     };
-    // Debounce search slightly
+
     const timer = setTimeout(() => fetchProducts(), 300);
     return () => clearTimeout(timer);
-  }, [search, selectedCategory, selectedSection, sortOrder]);
+  }, [currentPage, search, selectedCategory, selectedSection, sortOrder]);
 
 
   // --- 2. Handlers ---
@@ -186,6 +228,27 @@ function Products() {
             </div>
         </div>
       </div>
+      <div className="pagination-controls">
+                <button 
+                    onClick={handlePrev} 
+                    disabled={currentPage === 1}
+                    className="page-btn"
+                >
+                    Previous
+                </button>
+
+                <span className="page-info">
+                    Page {currentPage} of {totalPages}
+                </span>
+
+                <button 
+                    onClick={handleNext} 
+                    disabled={currentPage === totalPages}
+                    className="page-btn"
+                >
+                    Next
+                </button>
+            </div>
     </div>
   );
 }

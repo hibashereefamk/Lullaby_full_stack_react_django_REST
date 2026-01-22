@@ -8,13 +8,27 @@ from .models import CustomUser
 from django.utils import timezone
 from .utils import generate_otp,is_otp_expired
 from .models import CustomUser
-from .serializers import RegisterSerializer, LoginSerializer,UserProfileSerializer
+from .serializers import RegisterSerializer, LoginSerializer,UserProfileSerializer,ResetPasswordRequestSerializer,SetNewPasswordSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 from rest_framework import permissions
 from rest_framework import generics
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
+from .utils import Util
+ 
+
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import smart_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.urls import reverse
+import os
+
+from rest_framework import serializers
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
+
+
 
 @method_decorator(never_cache, name='dispatch')
 class sendOTPView(APIView):
@@ -130,3 +144,40 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         
         return self.request.user
+    
+
+class RequestPasswordResetEmail(generics.GenericAPIView):
+    serializer_class = ResetPasswordRequestSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = request.data['email'].strip()
+        user = CustomUser.objects.get(email=email)
+
+
+        uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+        token = PasswordResetTokenGenerator().make_token(user)
+        frontend_url = 'http://localhost:5173'
+        abs_url = f"{frontend_url}/reset-password/{uidb64}/{token}"
+
+        email_body = f'Hello, \n Click the link below to reset your password: \n {abs_url}'
+        
+        data = {
+            'email_body': email_body,
+            'to_email': user.email,
+            'email_subject': 'Reset your Password'
+        }
+        
+        Util.send_email(data)
+
+        return Response({'success': 'Link sent to your email'}, status=status.HTTP_200_OK)
+
+class SetNewPasswordAPIView(generics.GenericAPIView):
+    serializer_class = SetNewPasswordSerializer
+
+    def patch(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)

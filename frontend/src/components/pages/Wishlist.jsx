@@ -33,12 +33,16 @@ const handleViewProduct = (id) => navigate(`/products/${id}`);
   const fetchWishlist = () => {
     axios.get("http://127.0.0.1:8000/api/wishlist/", config)
       .then(res => {
-        console.log("Wishlist Data:", res.data); // Debugging
-        setWishlistItems(res.data);
+        console.log("Wishlist Data:", res.data);
+        
+        // 1. Extract the array correctly
+        const items = res.data.results ? res.data.results : res.data;
+        
+        // 2. USE THE EXTRACTED ARRAY HERE 👇
+        setWishlistItems(items); 
       })
       .catch(err => console.error("Error fetching wishlist:", err));
   };
-
   const removeFromWishlist = async (id) => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/wishlist/${id}/`, config);

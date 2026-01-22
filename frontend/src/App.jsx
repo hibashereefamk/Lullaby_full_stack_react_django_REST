@@ -13,6 +13,8 @@ import Checkout from "./components/pages/checkoutpage";
 import OrderSuccess from "./components/pages/OrderSuccess";
 import Profile from "./components/pages/Profile";
 import Order from "./components/pages/order";
+import ResetPassword from "./components/auth/ResetPassword";
+import RequestResetPassword from "./components/auth/RequestResetPassword";
 function App() {
  
   
@@ -32,7 +34,8 @@ function App() {
         <Route path="/order-success" element={<OrderSuccess/>} />
         <Route path="/profile" element={<Profile/>} />
         <Route path="/order" element={<Order/>} />
-        
+        <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+        <Route path="/request-reset" element={<RequestResetPassword />} />
 
 
 
