@@ -38,7 +38,7 @@ const handleViewProduct = (id) => navigate(`/products/${id}`);
         // 1. Extract the array correctly
         const items = res.data.results ? res.data.results : res.data;
         
-        // 2. USE THE EXTRACTED ARRAY HERE 👇
+        
         setWishlistItems(items); 
       })
       .catch(err => console.error("Error fetching wishlist:", err));
