@@ -26,7 +26,6 @@ function Checkout() {
     city: "",
     postal_code: "",
     state: "",
-    // You can keep country if backend accepts it, or remove if not needed
     country: "India", 
     is_default: false
   });

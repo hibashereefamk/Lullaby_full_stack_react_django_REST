@@ -6,11 +6,12 @@ import { Link } from "react-router-dom";
 import "./Home.css"; 
 import Footer from "./Footer";
 
+
 function Home() {
   const [promotions, setPromotions] = useState([]);
   const [categories, setCategories] = useState([]); 
   const [currentSlide, setCurrentSlide] = useState(0);
-
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,7 +29,7 @@ function Home() {
     fetchData();
   }, []);
 
-  // 2. Auto-slide Logic
+  
   useEffect(() => {
     if (promotions.length === 0) return;
     const timer = setInterval(() => {
@@ -41,7 +42,7 @@ function Home() {
     <div className="home-container">
       <Navbar />
 
-      {/* HERO SECTION */}
+
       <div className="hero-container">
         {promotions.length > 0 ? (
           promotions.map((promo, index) => (
@@ -68,7 +69,7 @@ function Home() {
           </div>
         )}
         
-        {/* Dots */}
+      
         <div className="dots-container">
           {promotions.map((_, index) => (
             <div
@@ -79,30 +80,30 @@ function Home() {
           ))}
         </div>
       </div>
-      <div className="promo-container">
-      <div className="promo-scrolling-text">
-        <span>
-  🔥 MEGA CLEARANCE SALE: UP TO 60% OFF 
-  &nbsp;&nbsp; • &nbsp;&nbsp; 
-  🧸 BUY 2 GET 1 FREE ON ALL PLUSH TOYS 
-  &nbsp;&nbsp; • &nbsp;&nbsp; 
-  ⚡ FLASH DEAL: DIAPER BAGS STARTING AT $19.99 
-  &nbsp;&nbsp; • &nbsp;&nbsp; 
-  💳 EXTRA 10% DISCOUNT ON FIRST APP ORDER 
-  &nbsp;&nbsp; • &nbsp;&nbsp; 
-  USE CODE: <strong>SUPERMOM</strong> FOR A MYSTERY GIFT! 🎁
-</span>
+      <div className="promo-bar">
+      <div className="promo-content">
+        <span className="promo-text">
+          🎉 <strong>Big Sale!</strong> Get 50% OFF on all Winter Wear. Use Code: <strong>WINTER50</strong>
+        </span>
+       <Link to="/products"> <button className="promo-btn" >Shop Now</button></Link>
       </div>
     </div>
 
-      {/* CATEGORY SECTION */}
+      
       <div className="section-container">
         <h2 className="section-heading"></h2>
         <div className="category-grid">
           {categories.length > 0 ? (
-            categories.map((cat) => (
+            categories.slice(0, 8).map((cat) => (
               <Link key={cat.id} to={`/products?category=${cat.slug}`} style={{ textDecoration: 'none' }}>
                 <div className="category-card">
+                  {/* --- DISCOUNT BADGE START --- */}
+      {cat.discount_percentage > 0 && (
+        <div className="discount-badge">
+          {cat.discount_percentage}% OFF
+        </div>
+      )}
+      {/* --- DISCOUNT BADGE END --- */}
                   <img src={cat.image} alt={cat.name} className="category-image" />
                   <div className="category-label">{cat.name}</div>
                 </div>
@@ -110,7 +111,7 @@ function Home() {
             ))
           ) : (
             <p>Loading categories...</p>
-          )}
+          )}   
         </div>
       </div>
       <Footer/>

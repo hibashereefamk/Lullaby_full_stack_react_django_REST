@@ -2,11 +2,11 @@ from rest_framework import serializers
 from .models import Product, ProductVariant,Promotion,Category, Wishlist,Cart, CartItem
 
 class CategorySerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True) # Ensures absolute URL
+    image = serializers.ImageField(use_url=True) 
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'image']
+        fields = ['id', 'name', 'slug', 'image','discount_percentage']
         read_only_fields = ['slug']
 
 class PromotionSerializer(serializers.ModelSerializer):
@@ -90,6 +90,21 @@ class CartItemSerializer(serializers.ModelSerializer):
         if obj.variant:
             return obj.variant.size
         return None
+    # def update(self, instance, validated_data):
+    #     # Extract 'size' from the incoming data
+    #     new_size = validated_data.pop('size', None)
+        
+    #     if new_size:
+    #         product = instance.product
+    #         # Find the variant that matches this product and the new size
+    #         variant = ProductVariant.objects.filter(product=product, size=new_size).first()
+            
+    #         if variant:
+    #             instance.variant = variant
+    #         else:
+    #             raise serializers.ValidationError({"size": "Selected size is not available."})
+
+    #     return super().update(instance, validated_data)
     
 class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)

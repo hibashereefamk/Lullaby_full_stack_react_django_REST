@@ -41,16 +41,16 @@ function Navbar() {
 
         {/* Navigation Links */}
         <Link to="/" className="nav-link">
-          <Home size={18} /> HOME
+           HOME
         </Link>
         <Link to="/products" className="nav-link">
-          <Package size={18} /> PRODUCTS
+           PRODUCTS
         </Link>
         <Link to="/order" className="nav-link">
-          <ShoppingBag size={18} /> MY ORDER
+           MY ORDER
         </Link>
         <Link to="/about" className="nav-link">
-          <Info size={18} /> ABOUT
+           ABOUT
         </Link>
       </div>
 

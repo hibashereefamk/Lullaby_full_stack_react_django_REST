@@ -73,7 +73,7 @@ class ResetPasswordRequestSerializer(serializers.Serializer):
         return attrs
     
 class SetNewPasswordSerializer(serializers.Serializer):
-    password = serializers.CharField(min_length=6, write_only=True)
+    password = serializers.CharField(min_length=8, write_only=True)
     token = serializers.CharField(write_only=True)
     uidb64 = serializers.CharField(write_only=True)
 
@@ -86,11 +86,11 @@ class SetNewPasswordSerializer(serializers.Serializer):
             token = attrs.get('token')
             uidb64 = attrs.get('uidb64')
 
-            # Decode the user ID
+           
             id = force_str(urlsafe_base64_decode(uidb64))
             user = CustomUser.objects.get(id=id)
 
-            # Check if the token is valid for this user
+        
             if not PasswordResetTokenGenerator().check_token(user, token):
                 raise serializers.ValidationError('The reset link is invalid or expired', 401)
 

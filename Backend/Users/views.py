@@ -16,17 +16,61 @@ from rest_framework import generics
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from .utils import Util
- 
+
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.urls import reverse
-import os
 
-from rest_framework import serializers
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
+class GoogleLoginView(APIView):
+    def post(self, request):
+        token = request.data.get('token')
+        
+        if not token:
+            return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # 1. Verify the token with Google
+            # Replace CLIENT_ID with your actual Client ID from Google Cloud
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), "515795235834-u4s88flf4tmfokjn6kfrhrejncl8jjcc.apps.googleusercontent.com",clock_skew_in_seconds=10)
+
+            # 2. Get user info from the verified token
+            email = idinfo['email']
+            first_name = idinfo.get('given_name', '')
+            last_name = idinfo.get('family_name', '')
+
+            # 3. Check if user exists, otherwise create them
+            user, created = CustomUser.objects.get_or_create(username=email, defaults={
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                
+            })
+            
+            # If creating a new user, you might want to set an unusable password
+            if created:
+                user.set_unusable_password()
+                user.save()
+
+            # 4. Create a Django Token (JWT approach shown here)
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'role': user.role,       # <--- Added this (React needs it)
+                'email': user.email,
+                'name': user.name,
+            })
+
+        except ValueError:
+            # Invalid token
+            return Response({'error': 'Invalid Google Token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -38,9 +82,9 @@ class sendOTPView(APIView):
         if not email:
             return Response({'error':"Email isrequired"},status=status.HTTP_400_BAD_REQUEST) 
         user, created = CustomUser.objects.get_or_create(
-        email=email,
-        defaults={"usrname":email.slip('@')[0]}
-)
+            email=email,
+            defaults={"username": email.split('@')[0]} 
+        )
         
         
         otp = generate_otp()
@@ -120,7 +164,7 @@ class LoginView(APIView):
             "access": str(refresh.access_token),
             "role": user.role,
             "email": user.email,
-            "name": user.name,
+            "name": user.first_name,
         })
     
 @method_decorator(never_cache, name='dispatch')    

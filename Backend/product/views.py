@@ -8,9 +8,10 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 
 class PromotionViewSet(viewsets.ModelViewSet):
-    queryset = Promotion.objects.filter(is_active=True) # Only show active slides
+    queryset = Promotion.objects.filter(is_active=True) 
     serializer_class = PromotionSerializer
     permission_classes = [IsVendorOrAdminOrReadOnly]
+    pagination_class = None
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.filter(is_active=True)
@@ -25,17 +26,19 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     
-    filterset_fields = ['category', 'section'] # Exact match fields
-    search_fields = ['name', 'description']    # Fields to search in
+    filterset_fields = ['category', 'section']
+    search_fields = ['name', 'description']    
     ordering_fields = ['price', 'created_at']
 class ProductDetailViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(is_active=True)
     serializer_class = ProductDetailSerializer
     permission_classes =[IsVendorOrAdminOrReadOnly]
+    pagination_class = None
     
 class WishlistViewSet(viewsets.ModelViewSet):
     serializer_class = WhishlistSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         return Wishlist.objects.filter(user=self.request.user)
@@ -46,6 +49,7 @@ class WishlistViewSet(viewsets.ModelViewSet):
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
     permission_classes =[permissions.IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         return Cart.objects.filter(user=self.request.user)
@@ -55,21 +59,16 @@ class CartViewSet(viewsets.ModelViewSet):
 class CartItemViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
-        # Ensure we only fetch items belonging to the current user's cart
         return CartItem.objects.filter(cart__user=self.request.user).order_by('-added_at')
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        # Get or create the cart for the user
         cart, _ = Cart.objects.get_or_create(user=user)
-
-        # Extract data from request
         product_id = request.data.get('product_id')
         size = request.data.get('size') 
-        
-        # Default quantity to 1 if not provided
         try:
             quantity = int(request.data.get('quantity', 1))
         except (ValueError, TypeError):
@@ -77,11 +76,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
 
         if not product_id:
             return Response({'error': "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Get the Product
         product = get_object_or_404(Product, id=product_id)
-
-        # Get the Variant (if size is provided)
         variant = None
         if size:
             try:

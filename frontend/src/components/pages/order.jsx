@@ -13,7 +13,7 @@ function Order() {
 
   const token = localStorage.getItem("access_token");
   
-  // --- 1. Fetch Orders on Mount ---
+  
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -97,7 +97,7 @@ function Order() {
                 
                   <div className="order-details">
                     
-                    {/* Address Section */}
+                    Address Section
                     <div className="shipping-info">
                       <strong><MapPin size={16} /> Delivery Address:</strong>
                       <p>{order.address}</p>

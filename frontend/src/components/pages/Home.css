@@ -144,34 +144,89 @@
   font-weight: bold;
   color: #333;
 }
-
-.promo-container {
-  background: linear-gradient(90deg, #6a1b9a 0%, #8e24aa 100%); /* Gradient Purple */
+.promo-bar {
+  background: linear-gradient(90deg, #ff416c, #ff4b2b); /* Eye-catching gradient */
   color: white;
-  text-align: center;
-  padding: 15px 20px;
-  margin-bottom: 25px;
+  padding: 10px 20px;
   display: flex;
-  height: 50px;
   justify-content: center;
   align-items: center;
-  border-top: 4px solid #f3e5f5; /* Light border for separation */
-  border-bottom: 4px solid #f3e5f5;
+  position: relative;
+  font-family: sans-serif;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+
+.promo-content {
+  display: flex;
+  gap: 15px;
+  align-items: center;
 }
 
 .promo-text {
-  font-family: sans-serif;
-  font-size: 1.1rem;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  font-size: 14px;
 }
 
-.coupon-code {
+.promo-btn {
   background-color: white;
-  color: #6a1b9a;
-  padding: 4px 10px;
+  color: #ff4b2b;
+  text-decoration: none;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  font-size: 12px;
+}
+
+.promo-btn:hover {
+  transform: scale(1.05);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  right: 15px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+  .promo-content {
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+  }
+  
+  .promo-bar {
+    padding-right: 40px; /* Make space for X button */
+  }
+}
+
+
+.category-card {
+  position: relative; /* Needed for absolute positioning of the badge */
+  overflow: hidden;   /* Keeps the badge inside the rounded corners */
+}
+
+.discount-badge {
+  position: absolute;
+  background-color: #ff4d4f; /* Red color for urgency */
+  color: white;
+  padding: 3px 6px;
   border-radius: 4px;
-  margin-left: 10px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }

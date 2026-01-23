@@ -17,9 +17,14 @@ class Category(models.Model):
     slug = models.SlugField(max_length=30,unique=True, blank=True) 
     image = models.ImageField(upload_to='categories/', blank=True, null=True)
     is_active = models.BooleanField(default=True)
+    discount_percentage = models.IntegerField(default=0, help_text="Enter discount % (e.g. 10 for 10%)")
+    
     
     class Meta:
         verbose_name_plural = "Categories"
+    @property
+    def has_discount(self):
+        return self.discount_percentage > 0
 
     def save(self, *args, **kwargs):
         if not self.slug:

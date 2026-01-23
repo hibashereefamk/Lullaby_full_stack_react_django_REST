@@ -6,18 +6,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import './Product.css';
 import Rating from "./Rating";
 
-// 1. Import the Context Hook
+
 import { useWishlist } from "../context/WishlistContext"; 
 
 function Products() {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]); // Stores the list of options
+  const [categories, setCategories] = useState([]); 
 
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(); 
   const [selectedSection, setSelectedSection] = useState(""); 
   const [sortOrder, setSortOrder] = useState("");
-  // 2. USE CONTEXT (This replaces the old 'user.fav' logic)
+  
   const { toggleWishlist, isInWishlist } = useWishlist();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +33,7 @@ function Products() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // --- 1. Fetching Logic (Same as before) ---
+  
   useEffect(() => {
     if (location.state?.category) setSelectedCategory(location.state.category);
     if (location.state?.section) setSelectedSection(location.state.section);
@@ -64,32 +64,31 @@ function Products() {
         }
     };
 
-  // --- FIX: Reset to Page 1 when filters change ---
-  // If user searches for something new, they should go back to the first page.
   useEffect(() => {
     setCurrentPage(1);
   }, [search, selectedCategory, selectedSection, sortOrder]);
 
 
-  // --- FIX: The Main Fetch Effect ---
+  
+  
   useEffect(() => {
     const fetchProducts = async () => {
         try {
-            // Construct params object for cleaner code
+          
             const params = {
-                page: currentPage, // FIX: Use the state variable, not 'page'
+                page: currentPage,
                 search: search,
                 category: selectedCategory,
                 section: selectedSection,
             };
 
-            // Add sorting if selected
+            
             if (sortOrder === "lowToHigh") params.ordering = "price";
             if (sortOrder === "highToLow") params.ordering = "-price";
 
             const response = await axios.get('http://127.0.0.1:8000/api/products/', { params });
 
-            // FIX: Handle the paginated response structure
+            
             if (response.data.results) {
                 setProducts(response.data.results);
                 
@@ -110,18 +109,18 @@ function Products() {
   }, [currentPage, search, selectedCategory, selectedSection, sortOrder]);
 
 
-  // --- 2. Handlers ---
+
   const handleViewProduct = (id) => navigate(`/products/${id}`);
 
-  // This function handles the click on the Heart
+  
   const handleFavClick = (e, product) => {
-    e.stopPropagation(); // Stop clicking the card
-    toggleWishlist(product); // Let Context handle API and State
+    e.stopPropagation(); 
+    toggleWishlist(product); 
   };
 
   const handleAddToCart = async (e, product) => {
      e.stopPropagation();
-     // ... (Your Add to Cart logic here) ...
+
      const token = localStorage.getItem("access_token");
      if (!token) return alert("Please login");
      try {
@@ -140,7 +139,6 @@ function Products() {
       <div className="main-layout">
         <aside className="sidebar">
             <div className="sidebar-header"><Filter size={20} /><h3>Filters</h3></div>
-            {/* ... Filters (Gender/Category) ... */}
              <div className="filter-section">
                 <h4>Gender</h4>
                 <ul className="category-list">
@@ -166,8 +164,7 @@ function Products() {
                     <input type="text" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
                 </div>
                 
-            
-            {/* [NEW FEATURE] Sort Button (Left of Search) */}
+                
             <div className="relative">
               <select 
                 className="sort-button"
@@ -185,16 +182,13 @@ function Products() {
             <div className="product-grid">
                 {products.map(product => {
                     const hasDiscount = product.discount_price > 0;
-                    
-                    // 3. CHECK IF LIKED (Using Context)
                     const isLiked = isInWishlist(product.id);
 
                     return (
                         <div key={product.id} className="product-card" onClick={() => handleViewProduct(product.id)}>
                             <div className="image-wrapper">
                                 <img className="product-image" src={product.image} alt={product.name} />
-
-                                {/* 4. THE HEART ICON (Style matches your old project) */}
+                                
                                 <div className="wishlist-icon">
                                     <Heart 
                                         size={24}

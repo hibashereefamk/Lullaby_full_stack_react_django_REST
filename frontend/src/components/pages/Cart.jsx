@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Trash2, Plus, Minus, AlertCircle } from "lucide-react"; // Added AlertCircle for warning
+import { Trash2, Plus, Minus, AlertCircle } from "lucide-react"; 
 import Navbar from "./Navbar";
 import "./Cart.css";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +35,7 @@ function Cart() {
       .catch(err => console.error("Error fetching cart", err));
   };
 
-  // --- NEW: Logic to Update Size ---
+  
   const updateSize = async (id, newSize) => {
     try {
       await axios.patch(
@@ -58,7 +58,7 @@ function Cart() {
       setCartItems(prev => prev.map(item =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       ));
-      fetchCart(); // Fetch to ensure subtotals match backend
+      fetchCart();
     } catch (err) {
       console.error("Error updating quantity", err);
     }
@@ -72,7 +72,7 @@ function Cart() {
       console.error("Error removing item", err);
     }
   };
-// In Cart.jsx
+
 
 const handleCheckout = async () => {
     const missingSizes = cartItems.some(item => {

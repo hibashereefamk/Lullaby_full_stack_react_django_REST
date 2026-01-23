@@ -12,7 +12,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
     http_method_names =['get','post','head','options']
-
+    
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).order_by('-created_at')
 
@@ -20,7 +20,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 class OrderItemViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    pagination_class = None
     def get_queryset(self):
         return OrderItem.objects.filter(order__user=self.request.user)
     
@@ -30,20 +30,20 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 class AddressListCreateView(generics.ListCreateAPIView):
     serializer_class = AddressSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    pagination_class = None
     def get_queryset(self):
-        # Only return addresses for the currently logged-in user
+        
         return Address.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        # Automatically assign the new address to the logged-in user
+       
         serializer.save(user=self.request.user)
 
         
 class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    pagination_class = None
     def get_queryset(self):
         return Payment.objects.filter(order__user=self.request.user)
 

@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'order',
-    'payments',
     'Users',
     'product',
 
