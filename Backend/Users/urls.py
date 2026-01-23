@@ -8,7 +8,6 @@ urlpatterns = [
     path('api/send-otp/', sendOTPView.as_view()),
     path('api/profile/', UserProfileView.as_view(), name='user-profile'),
     path('api/logout/', LogoutView.as_view(), name='logout'),
-
     path('api/request-reset-email/', RequestPasswordResetEmail.as_view(), name="request-reset-email"),
     path('api/password-reset-complete/', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
     path('api/google-login/', GoogleLoginView.as_view(), name='google_login'),

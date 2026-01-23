@@ -1,14 +1,8 @@
 from .models import Order, OrderItem, Address, Payment
 from product.serializers import ProductSerializer, ProductVariantLiteSerializer
-from rest_framework import serializers
-from product.models import Cart
-from rest_framework import serializers
-from .models import Address
 
 from rest_framework import serializers
-from .models import Order, OrderItem, Address, Payment
-from product.models import Cart
-from product.serializers import ProductSerializer, ProductVariantLiteSerializer
+from product.models import Cart,ProductVariant
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -66,6 +60,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Cannot place order. Your cart is empty.")
         except Cart.DoesNotExist:
             raise serializers.ValidationError('Cart not found.')
+        
         order = Order.objects.create(
             user=user,
             address=address_text,
@@ -75,7 +70,19 @@ class OrderSerializer(serializers.ModelSerializer):
 
         total_price = 0
         order_items = []
+
         for item in cart_items:
+            variant =item.variant
+
+            if variant:
+                locked_variant = ProductVariant.objects.select_for_update().get(id = variant.id)
+                if locked_variant.stock < item.quantity:
+                    raise serializers.ValidationError(
+                        f"Out of stock. Only {locked_variant.stock} left for {item.product.name} ({locked_variant.size})"
+                    )
+                locked_variant.stock -=item.quantity
+                locked_variant.save()
+
             price = item.product.discount_price if item.product.discount_price else item.product.price
             total_price += price * item.quantity
             item_size = item.variant.size if item.variant else getattr(item, 'size', None)

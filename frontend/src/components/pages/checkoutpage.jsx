@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MapPin, CreditCard, Plus, CheckCircle } from "lucide-react";
 import "./checkoutpage.css";
+import PaymentButton from "./PaymentComponent";
 
 function Checkout() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ function Checkout() {
   const [cart, setCart] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [loading, setLoading] = useState(true);
 
   // Address Form State
@@ -294,15 +295,15 @@ function Checkout() {
                   />
                   <span>Cash on Delivery (COD)</span>
                 </label>
-                <label className={`payment-option ${paymentMethod === "Online" ? "active" : ""}`}>
+                <label className={`payment-option ${paymentMethod === "RAZORPAY" ? "active" : ""}`}>
                   <input
                     type="radio"
                     name="payment"
-                    value="Online"
-                    checked={paymentMethod === "Online"}
+                    value="RAZORPAY"
+                    checked={paymentMethod === "RAZORPAY"}
                     onChange={(e) => setPaymentMethod(e.target.value)}
                   />
-                  <span>Online Payment</span>
+                  <span>RAZORPAY Payment</span>
                 </label>
               </div>
             </section>
@@ -349,15 +350,20 @@ function Checkout() {
                   <span>Total</span>
                   <span>₹{cart?.total_price || 0}</span>
                 </div>
-              </div>
-
-              <button
+              </div>{paymentMethod ==='COD'?(
+                <button
                 className="place-order-btn"
                 onClick={handlePlaceOrder}
                 disabled={!cart || !cart.items || cart.items.length === 0}
               >
                 Place Order <CheckCircle size={18} />
               </button>
+              ):(
+                <PaymentButton
+                cartTotal={cart.total_price} addressId={selectedAddressId} paymentMethod={'RAZORPAY'}/>
+              )}
+
+              
             </div>
           </div>
         </div>

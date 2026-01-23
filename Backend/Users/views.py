@@ -181,13 +181,33 @@ class LogoutView(APIView):
             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(never_cache, name='dispatch')
-class UserProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserProfileSerializer
+class UserProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_object(self):
-        
-        return self.request.user
+    # Handle GET requests (Retrieve)
+    def get(self, request):
+        user = request.user
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # Handle PUT requests (Full Update)
+    def put(self, request):
+        user = request.user
+        serializer = UserProfileSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Handle PATCH requests (Partial Update)
+    def patch(self, request):
+        user = request.user
+        # partial=True allows updating just one field (e.g., just changing the name)
+        serializer = UserProfileSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class RequestPasswordResetEmail(generics.GenericAPIView):

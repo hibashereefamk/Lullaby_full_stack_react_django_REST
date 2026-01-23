@@ -172,3 +172,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Your Public Key ID (Safe to share with frontend)
+RAZORPAY_KEY_ID = 'rzp_test_RgjsRtwJcR5YW8'
+
+# Your Private Key Secret (Keep this on backend only!)
+RAZORPAY_KEY_SECRET = 'AiSySpQfsmQUX5pmtxrEe9Qs'

@@ -113,7 +113,6 @@ function Profile() {
         { 
           headers: { 
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
           } 
         }
       );
@@ -137,7 +136,7 @@ function Profile() {
           };
 
           if (addressId) {
-            // UPDATE existing address
+            
             await axios.patch(
                 `${BASE_URL}/api/addresses/${addressId}/`,
                 addressPayload,
