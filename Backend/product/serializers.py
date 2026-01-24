@@ -18,13 +18,13 @@ class PromotionSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at']
 
 
-class ProductVariantSerializer(serializers.ModelSerializer):
-    product_name = serializers.ReadOnlyField(source='product.name')
-    product_id = serializers.ReadOnlyField(source='product.id')
-    product_image = serializers.ImageField(source='product.image', read_only=True)
-    class Meta:
-        model = ProductVariant
-        fields = ['id', 'product_id', 'product_name', 'product_image', 'size', 'stock']
+# class ProductVariantSerializer(serializers.ModelSerializer):
+#     product_name = serializers.ReadOnlyField(source='product.name')
+#     product_id = serializers.ReadOnlyField(source='product.id')
+#     product_image = serializers.ImageField(source='product.image', read_only=True)
+#     class Meta:
+#         model = ProductVariant
+#         fields = ['id', 'product_id', 'product_name', 'product_image', 'size', 'stock']
         
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -90,21 +90,6 @@ class CartItemSerializer(serializers.ModelSerializer):
         if obj.variant:
             return obj.variant.size
         return None
-    # def update(self, instance, validated_data):
-    #     # Extract 'size' from the incoming data
-    #     new_size = validated_data.pop('size', None)
-        
-    #     if new_size:
-    #         product = instance.product
-    #         # Find the variant that matches this product and the new size
-    #         variant = ProductVariant.objects.filter(product=product, size=new_size).first()
-            
-    #         if variant:
-    #             instance.variant = variant
-    #         else:
-    #             raise serializers.ValidationError({"size": "Selected size is not available."})
-
-    #     return super().update(instance, validated_data)
     
 class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)
@@ -123,3 +108,19 @@ class CartSerializer(serializers.ModelSerializer):
             total += price * item.quantity
         return total
     
+
+class ProductsAdminSerializer(serializers.ModelSerializer):
+    category = serializers.CharField(source='category.name', read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), source='category', write_only=True
+    )
+    variants=ProductVariantLiteSerializer(many=True)
+    total_stock=serializers.SerializerMethodField()
+    class Meta:
+        model=Product
+        fields=['id','created_at','is_active','discount_price','total_stock','variants',
+                "category",'image','description','category_id','price','section']
+
+    def get_total_stock(self,obj):
+        variants = obj.variants.all() if hasattr(obj,'variants') else obj.productvariant_set.all()
+        return sum(variant.stock for variant in variants)

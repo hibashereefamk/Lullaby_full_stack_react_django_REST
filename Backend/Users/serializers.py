@@ -2,12 +2,13 @@ from rest_framework import serializers
 from .models import CustomUser
 from django.contrib.auth import authenticate,get_user_model
 from rest_framework.exceptions import AuthenticationFailed
-
+from rest_framework.permissions import BasePermission
 from rest_framework import serializers
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from .models import CustomUser
+from rest_framework.pagination import PageNumberPagination
 
 
 
@@ -33,7 +34,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=CustomUser
-        fields=['id','name','email','role','phone_number', 'profile_picture']
+        fields=['id','name','email','role','phone_number', 'profile_picture', 'created_at']
+        read_only_fields = ['email', 'first_name', 'last_name', 'phone', 'created_at']
 
 class LoginSerializer(serializers.Serializer):
     email =serializers.EmailField()

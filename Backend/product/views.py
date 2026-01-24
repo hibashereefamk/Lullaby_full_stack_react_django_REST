@@ -1,11 +1,15 @@
 from rest_framework import viewsets, permissions,filters
 from .models import Product, Promotion, Category, Wishlist, Cart, CartItem,ProductVariant
 from .permission import  IsVendorOrAdminOrReadOnly
-from .serializers import ProductSerializer, PromotionSerializer,CategorySerializer, WhishlistSerializer, CartItemSerializer,CartSerializer,ProductDetailSerializer
+from .serializers import (ProductSerializer, PromotionSerializer,CategorySerializer, WhishlistSerializer,
+                          CartItemSerializer,CartSerializer,ProductDetailSerializer,ProductsAdminSerializer)
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser
+from rest_framework.pagination import PageNumberPagination
 
 class PromotionViewSet(viewsets.ModelViewSet):
     queryset = Promotion.objects.filter(is_active=True) 
@@ -146,3 +150,40 @@ class CartItemViewSet(viewsets.ModelViewSet):
 
         # 4. Handle standard updates (like changing quantity buttons in cart)
         return super().partial_update(request, *args, **kwargs)
+    
+
+class ProductAdminListAPIView(APIView):
+    permission_classes=[IsAdminUser]
+    def get(self,request):
+        products =Product.objects.all().order_by('-created_at')
+        paginator = PageNumberPagination()
+        paginator.page_size = 10 
+        result_page = paginator.paginate_queryset(products, request)
+        serializer = ProductsAdminSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+    def post(self,request):
+        serializer =ProductsAdminSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+class ProductAdminDetailAPIView(APIView):
+    permission_classes=[IsAdminUser]
+    def get_object(self,pk):
+        return get_object_or_404(Product,pk=pk)
+    def get(self,request,pk):
+        product=self.get_object(pk)
+        serializer =ProductsAdminSerializer(product)
+        return Response(serializer.data)
+    def put(self,request,pk):
+        product =self.get_object(pk)
+        serializer =ProductsAdminSerializer(product,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    def delete(self,request,pk):
+        product =self.get_object(pk)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
