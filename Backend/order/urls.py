@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import OrderViewSet, OrderItemViewSet, AddressListCreateView, CreateOrderViwe,AddressDetailView
+from .views import (OrderViewSet, OrderItemViewSet, AddressListCreateView,
+CreateOrderViwe,AddressDetailView,AdminOrderListView,AdminOrderUpdateView)
 
 
 router = DefaultRouter()
@@ -11,4 +12,6 @@ urlpatterns = [
     path('addresses/', AddressListCreateView.as_view(), name='address-list-create'),
     path('addresses/<int:pk>/', AddressDetailView.as_view(), name='address-list-create'),
     path('payment/create-order/', CreateOrderViwe.as_view(), name='create-order'),
+    path('admin/orders/', AdminOrderListView.as_view(), name='admin-order-list'),
+    path('admin/orders/<int:pk>/', AdminOrderUpdateView.as_view(), name='admin-order-detail'),
 ]

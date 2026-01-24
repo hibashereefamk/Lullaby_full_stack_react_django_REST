@@ -78,14 +78,3 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment {self.payment_id} for Order {self.order.order_number}"
-
-class ShippingDetail(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE)
-    tracking_number = models.CharField(max_length=50, blank=True, null=True)
-    carrier = models.CharField(max_length=50, blank=True, null=True)
-    shipped_at = models.DateTimeField(blank=True, null=True)
-    delivered_at = models.DateTimeField(blank=True, null=True)
-
-    def __str__(self):
-        return f"Shipping Detail for Order {self.order.order_number}"   
-

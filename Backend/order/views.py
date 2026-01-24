@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions,status
 from rest_framework.response import Response
 from .models import Order, OrderItem, Address, Payment
-from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer, PaymentSerializer 
+from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer, PaymentSerializer,OrderAdminSerializer
 from rest_framework import generics, permissions
 from .models import Address
 from .serializers import AddressSerializer
@@ -11,6 +11,8 @@ from rest_framework import serializers
 import razorpay
 from rest_framework.views import APIView
 from django.conf import settings
+from rest_framework.permissions import IsAdminUser
+from django.db.models import Q
 
 class CreateOrderViwe(APIView):
     def post(self,request):
@@ -108,5 +110,23 @@ class PaymentViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 
+
+class AdminOrderListView(generics.ListAPIView):
+    permission_classes = [IsAdminUser]
+    serializer_class =OrderAdminSerializer
+
+    def get_queryset(self):
+        return Order.objects.select_related('user').prefetch_related('items').filter(
+            Q(Payment_status ='Success')|Q(Payment_method ='COD')
+            ).order_by('-created_at')
+class AdminOrderUpdateView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAdminUser]
+    serializer_class = OrderAdminSerializer
+    queryset =Order.objects.select_related('user'
+    ).prefetch_related('items').all()
+
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
+    
 
 

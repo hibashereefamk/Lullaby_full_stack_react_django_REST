@@ -22,6 +22,7 @@ class AddressSerializer(serializers.ModelSerializer):
         if len(value) != 6 :
             raise serializers.ValidationError("Postal code must contain 6 digits")
         return value
+    
 class OrderItemSerializer(serializers.ModelSerializer):
     product_details = ProductSerializer(source='product', read_only=True)
     variant_details = ProductVariantLiteSerializer(source='variant', read_only=True)
@@ -116,11 +117,24 @@ class PaymentSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at']
 
 
-class PaymentSerializer(serializers.ModelSerializer):
-    order_details = OrderSerializer(source='order', read_only=True)
+ 
+class OrderAdminSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(read_only=True, many=True)
+    order_date = serializers.DateTimeField(source='created_at', format="%Y-%m-%d", read_only=True)
+    user = serializers.CharField(source='user.name', read_only=True)
+    
 
     class Meta:
-        model = Payment
-        fields = ['id', 'order', 'order_details', 'payment_id', 'amount', 'status', 'created_at']
-        read_only_fields = ['created_at']
-
+        model = Order
+        fields = [
+            'id', 
+            'order_number', 
+            'status', 
+            'user',           
+            'items',          
+            'total_amount', 
+            'payment_method', 
+            'payment_status', 
+            'address',        
+            'order_date'
+        ]
