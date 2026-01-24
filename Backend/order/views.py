@@ -13,8 +13,10 @@ from rest_framework.views import APIView
 from django.conf import settings
 from rest_framework.permissions import IsAdminUser
 from django.db.models import Q
+from product.permission import IsActiveUser
 
 class CreateOrderViwe(APIView):
+    permission_classes = [IsActiveUser]
     def post(self,request):
        # Fix: Add .Client
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
@@ -45,7 +47,7 @@ class CreateOrderViwe(APIView):
 
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsActiveUser]
     http_method_names =['get','post','head','options']
     
     def get_queryset(self):
@@ -68,7 +70,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                 
 class OrderItemViewSet(viewsets.ModelViewSet):
     serializer_class = OrderItemSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsActiveUser]
     pagination_class = None
     def get_queryset(self):
         return OrderItem.objects.filter(order__user=self.request.user)
@@ -78,7 +80,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 
 class AddressListCreateView(generics.ListCreateAPIView):
     serializer_class = AddressSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsActiveUser]
     pagination_class = None
     def get_queryset(self):
         
@@ -89,7 +91,7 @@ class AddressListCreateView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AddressSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsActiveUser]
     
     def get_queryset(self):
         # This handles the lookup logic automatically
@@ -98,7 +100,7 @@ class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
         
 class PaymentViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsActiveUser]
     pagination_class = None
     def get_queryset(self):
         return Payment.objects.filter(order__user=self.request.user)

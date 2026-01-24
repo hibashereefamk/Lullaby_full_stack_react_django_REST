@@ -12,7 +12,9 @@ class CustomUser(AbstractUser):
     )
     name=models.CharField(max_length=100)
     role =models.CharField(max_length=20,choices=ROLE_CHOICES,default='customer')
+    is_active=models.BooleanField(default=True)
     email =models.EmailField(unique=True)
+    is_staff=models.BooleanField(default=False)
     phone_number=models.CharField(max_length=15,blank=True,null=True)
     profile_picture=models.ImageField(upload_to='profile_pics/',blank=True,null=True)
     otp=models.CharField(max_length=6,blank=True,null=True)
@@ -20,6 +22,7 @@ class CustomUser(AbstractUser):
     is_email_verification=models.BooleanField(default=False)
     bio = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
     
 
     def __str__(self):

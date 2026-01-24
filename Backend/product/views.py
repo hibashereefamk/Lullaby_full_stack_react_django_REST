@@ -1,6 +1,6 @@
 from rest_framework import viewsets, permissions,filters
 from .models import Product, Promotion, Category, Wishlist, Cart, CartItem,ProductVariant
-from .permission import  IsVendorOrAdminOrReadOnly
+from .permission import IsActiveUser
 from .serializers import (ProductSerializer, PromotionSerializer,CategorySerializer, WhishlistSerializer,
                           CartItemSerializer,CartSerializer,ProductDetailSerializer,ProductsAdminSerializer)
 from django_filters.rest_framework import DjangoFilterBackend
@@ -14,19 +14,16 @@ from rest_framework.pagination import PageNumberPagination
 class PromotionViewSet(viewsets.ModelViewSet):
     queryset = Promotion.objects.filter(is_active=True) 
     serializer_class = PromotionSerializer
-    permission_classes = [IsVendorOrAdminOrReadOnly]
     pagination_class = None
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.filter(is_active=True)
     serializer_class = CategorySerializer
-    permission_classes =[IsVendorOrAdminOrReadOnly]
     pagination_class = None
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(is_active=True)
     serializer_class = ProductSerializer
-    permission_classes =[IsVendorOrAdminOrReadOnly]
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     
@@ -37,12 +34,11 @@ class ProductViewSet(viewsets.ModelViewSet):
 class ProductDetailViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(is_active=True)
     serializer_class = ProductDetailSerializer
-    permission_classes =[IsVendorOrAdminOrReadOnly]
     pagination_class = None
     
 class WishlistViewSet(viewsets.ModelViewSet):
     serializer_class = WhishlistSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsActiveUser]
     pagination_class = None
 
     def get_queryset(self):
@@ -53,7 +49,7 @@ class WishlistViewSet(viewsets.ModelViewSet):
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer
-    permission_classes =[permissions.IsAuthenticated]
+    permission_classes =[IsActiveUser]
     pagination_class = None
 
     def get_queryset(self):
@@ -63,7 +59,7 @@ class CartViewSet(viewsets.ModelViewSet):
 
 class CartItemViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsActiveUser]
     pagination_class = None
 
     def get_queryset(self):

@@ -4,7 +4,9 @@ from product.serializers import ProductSerializer, ProductVariantLiteSerializer
 from rest_framework import serializers
 from product.models import Cart,ProductVariant
 
+
 class AddressSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Address
         fields = ['id', 'full_name', 'phone_number', 'street_address', 'city', 'state', 'postal_code', 'country', 'address_type', 'is_default']
@@ -24,6 +26,7 @@ class AddressSerializer(serializers.ModelSerializer):
         return value
     
 class OrderItemSerializer(serializers.ModelSerializer):
+    
     product_details = ProductSerializer(source='product', read_only=True)
     variant_details = ProductVariantLiteSerializer(source='variant', read_only=True)
     
@@ -36,6 +39,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['order', 'price', 'size', 'product_name']
 class OrderSerializer(serializers.ModelSerializer):
+    
     items = OrderItemSerializer(many=True, read_only=True)
     address_id = serializers.IntegerField(write_only=True)
 
@@ -109,6 +113,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+   
     order_details = OrderSerializer(source='order', read_only=True)
 
     class Meta:
@@ -122,6 +127,7 @@ class OrderAdminSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(read_only=True, many=True)
     order_date = serializers.DateTimeField(source='created_at', format="%Y-%m-%d", read_only=True)
     user = serializers.CharField(source='user.name', read_only=True)
+    
     
 
     class Meta:

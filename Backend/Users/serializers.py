@@ -8,7 +8,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from .models import CustomUser
-from rest_framework.pagination import PageNumberPagination
+
 
 
 
@@ -30,13 +30,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             phone_number=validated_data.get('phone_number'),
         )
         return user
-    
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=CustomUser
-        fields=['id','name','email','role','phone_number', 'profile_picture', 'created_at']
-        read_only_fields = ['email', 'first_name', 'last_name', 'phone', 'created_at']
 
+       
 class LoginSerializer(serializers.Serializer):
     email =serializers.EmailField()
     password=serializers.CharField(write_only=True)
@@ -57,11 +52,11 @@ class LoginSerializer(serializers.Serializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField( read_only=True)
     email = serializers.CharField( read_only=True)
-    date_joined = serializers.DateTimeField( read_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username','name', 'email','profile_picture', 'phone_number','bio',  'date_joined']
+        fields = ['id', 'username','name', 'email','profile_picture', 'phone_number','bio','is_staff','created_at']
+        read_only_fields = ['id', 'email', 'is_staff','created_at']
 
 class ResetPasswordRequestSerializer(serializers.Serializer):
     email =serializers.EmailField(min_length = 2)
@@ -101,3 +96,9 @@ class SetNewPasswordSerializer(serializers.Serializer):
             return user
         except Exception as e:
             raise serializers.ValidationError('The reset link is invalid', 401)
+        
+class AdminUserStatuserializer(serializers.ModelSerializer):
+    class Meta:
+        model =CustomUser
+        fields=['id','name','email','phone_number', 'is_active']
+        read_only_fields = ['id', 'username', 'email', 'phone_number']

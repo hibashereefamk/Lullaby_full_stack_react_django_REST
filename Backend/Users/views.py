@@ -3,29 +3,25 @@ from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from .models import CustomUser
+from product.permission import IsActiveUser
 from django.utils import timezone
 from .utils import generate_otp,is_otp_expired
 from .models import CustomUser
-from .serializers import RegisterSerializer, LoginSerializer,UserProfileSerializer,ResetPasswordRequestSerializer,SetNewPasswordSerializer
+from .serializers import( RegisterSerializer, LoginSerializer,UserProfileSerializer,ResetPasswordRequestSerializer,
+                         SetNewPasswordSerializer,AdminUserStatuserializer)
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
-from rest_framework import permissions
 from rest_framework import generics
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from .utils import Util
-
-
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import smart_bytes
 from django.utils.http import urlsafe_base64_encode
-from django.urls import reverse
-
-
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from rest_framework.permissions import IsAdminUser,IsAuthenticated
+from django.shortcuts import get_object_or_404
 
 class GoogleLoginView(APIView):
     def post(self, request):
@@ -182,15 +178,11 @@ class LogoutView(APIView):
 
 @method_decorator(never_cache, name='dispatch')
 class UserProfileView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    # Handle GET requests (Retrieve)
+    permission_classes = [IsActiveUser]
     def get(self, request):
         user = request.user
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    # Handle PUT requests (Full Update)
     def put(self, request):
         user = request.user
         serializer = UserProfileSerializer(user, data=request.data)
@@ -198,11 +190,8 @@ class UserProfileView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # Handle PATCH requests (Partial Update)
     def patch(self, request):
         user = request.user
-        # partial=True allows updating just one field (e.g., just changing the name)
         serializer = UserProfileSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -245,3 +234,25 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)
+    
+class AdminUserManagementView(APIView):
+    permission_classes =[IsAdminUser]
+    def get(self,request):
+        user_id =request.query_params.get('user_id')
+        if user_id:
+            user =get_object_or_404(CustomUser,id=user_id)
+            serializer =AdminUserStatuserializer(user)
+        else:
+            users =CustomUser.objects.all().order_by('-id')
+            serializer=AdminUserStatuserializer(users,many=True)
+        return Response(serializer.data)
+
+    def path(self,request):
+        user_id =request.query_params.get('user_id')
+        user =get_object_or_404(CustomUser,id=user_id)
+        serializer =AdminUserStatuserializer(user,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            status_text ='Active' if user.is_active else 'Blocked'
+            return Response({'message':f"User is now {status_text}",'data':serializer.data})
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

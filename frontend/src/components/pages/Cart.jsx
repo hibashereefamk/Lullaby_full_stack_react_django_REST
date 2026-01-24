@@ -16,10 +16,14 @@ function Cart() {
       "Content-Type": "application/json",
     },
   };
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
+useEffect(() => {
+    if (token) {
+      fetchWishlist();
+    } else {
+      alert("Please login to view your cart");
+      navigate("/login");
+    }
+  }, [token]);
 
   useEffect(() => {
     const newTotal = cartItems.reduce(
@@ -30,10 +34,11 @@ function Cart() {
   }, [cartItems]);
 
   const fetchCart = () => {
+   
     axios.get("http://127.0.0.1:8000/api/cartitems/", config)
       .then(res => setCartItems(res.data))
       .catch(err => console.error("Error fetching cart", err));
-  };
+  ;}
 
   
   const updateSize = async (id, newSize) => {
