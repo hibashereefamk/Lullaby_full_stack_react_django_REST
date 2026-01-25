@@ -69,6 +69,16 @@ const [stats, setStats] = useState({
           <div className="card-title">Total Income</div>
           <div className="card-value">${stats.total_income.toLocaleString()}</div>
         </div>
+        <div className="stat-card card-green">
+          <div className="card-title">Total Sucess Payment</div>
+          <div className="card-value">${stats.total_payment_success.toLocaleString()}</div>
+        </div>
+        <div className="stat-card card-green">
+          <div className="card-title">Total Pending Payment</div>
+          <div className="card-value">${stats.total_payment_pending.toLocaleString()}</div>
+        </div>
+    </div>
+    <div className="stats-grid">
         <Link to="/admin/products" className="stat-card card-blue">
           <div className="card-title">Total Products</div>
           <div className="card-value">{stats.total_products}</div>
@@ -88,8 +98,6 @@ const [stats, setStats] = useState({
         </Link>
       </div>
       <div className="details-grid">
-        
-        {/* Order Status Breakdown */}
         <div className="details-panel">
           <h3 className="panel-title">Order Status</h3>
           <div className="status-container">
@@ -101,20 +109,6 @@ const [stats, setStats] = useState({
             ))}
             {stats.order_status_breakdown.length === 0 && <p>No orders yet.</p>}
           </div>
-        </div>
-
-        <div className="details-panel">
-          <h3 className="panel-title">Quick Actions</h3>
-          
-          <Link to="/terms-and-conditions" className="quick-link link-blue">
-            <span>Edit Terms Page</span>
-            <span>&rarr;</span>
-          </Link>
-            <Link to="/admin/products/add" className="quick-link link-green">
-            <span>Add New Product</span>
-            <span>+</span>
-          </Link>
-
         </div>
       </div>
 

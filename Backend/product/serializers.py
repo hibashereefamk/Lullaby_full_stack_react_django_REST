@@ -115,8 +115,8 @@ class CartSerializer(serializers.ModelSerializer):
 class ProductsAdminSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name', read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), source='category', write_only=True
-    )
+        queryset=Category.objects.all(), source='category')
+    
     variants = ProductVariantLiteSerializer(many=True)
     total_stock = serializers.SerializerMethodField()
 

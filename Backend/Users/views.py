@@ -247,7 +247,7 @@ class AdminUserManagementView(APIView):
             serializer=AdminUserStatuserializer(users,many=True)
         return Response(serializer.data)
 
-    def path(self,request):
+    def patch(self,request):
         user_id =request.query_params.get('user_id')
         user =get_object_or_404(CustomUser,id=user_id)
         serializer =AdminUserStatuserializer(user,data=request.data,partial=True)

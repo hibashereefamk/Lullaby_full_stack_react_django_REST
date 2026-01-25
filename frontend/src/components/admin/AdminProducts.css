@@ -33,8 +33,8 @@
 
 .btn-primary:hover { background-color: #2563eb; }
 
-.btn-danger {
-  background-color: #ef4444;
+.btn-view {
+  background-color: #353d8d;
   color: white;
   padding: 6px 12px;
   border-radius: 4px;
@@ -44,8 +44,7 @@
   margin-left: 8px;
 }
 
-.btn-edit {
-  background-color: #f59e0b;
+.btn-action {
   color: white;
   padding: 6px 12px;
   border-radius: 4px;
@@ -53,6 +52,8 @@
   cursor: pointer;
   font-size: 0.85rem;
 }
+.btn-active { background-color: #10b981; }
+.btn-deactive { background-color: #f59e0b; }
 
 /* --- Table Styles --- */
 .table-wrapper {
@@ -93,12 +94,18 @@
   border: 1px solid #e5e7eb;
 }
 
-/* --- Pagination --- */
+
 .pagination {
   display: flex;
   justify-content: center;
   gap: 12px;
   margin-top: 24px;
+}
+.btn-admin-action{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
 }
 
 .btn-page {

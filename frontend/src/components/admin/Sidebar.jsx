@@ -12,16 +12,16 @@ const Sidebar = () => {
   }
   return (
     <>
-    <aside className="sidebar">
+    <aside className="sidemenu">
       {/* 1. Logo Section */}
-      <div className="sidebar-header">
+      <div className="sidemenu-header">
         <NavLink to="/" className="logo-soft">
           LULLABY
         </NavLink>
       </div>
 
       {/* 2. Navigation Menu */}
-      <nav className="sidebar-nav">
+      <nav className="sidemenu-nav">
         <ul>
           {/* Dashboard (Index) - 'end' ensures it's only active at /admin */}
           <li>
@@ -55,7 +55,7 @@ const Sidebar = () => {
       </nav>
 
       {/* 3. User Profile Footer (Like the picture) */}
-      <div className="sidebar-footer">
+      <div className="sidemenu-footer">
         
         <div className="user-avatar">
           <p className="user-role">Store Manager</p>

@@ -1,4 +1,4 @@
-from .models import Order, OrderItem, Address, Payment
+from .models import Order, OrderItem, Address
 from product.serializers import ProductSerializer, ProductVariantLiteSerializer
 
 from rest_framework import serializers
@@ -70,6 +70,7 @@ class OrderSerializer(serializers.ModelSerializer):
             user=user,
             address=address_text,
             payment_method=validated_data.get('payment_method', 'COD'), 
+            payment_status =validated_data.get('payment_status', 'Pending'),
             total_amount=0
         )
 
@@ -112,14 +113,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
 
 
-class PaymentSerializer(serializers.ModelSerializer):
-   
-    order_details = OrderSerializer(source='order', read_only=True)
 
-    class Meta:
-        model = Payment
-        fields = ['id', 'order', 'order_details', 'payment_id', 'amount', 'status', 'created_at']
-        read_only_fields = ['created_at']
 
 
  

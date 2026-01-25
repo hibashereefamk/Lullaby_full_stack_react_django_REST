@@ -180,10 +180,9 @@ class ProductAdminDetailAPIView(APIView):
         product = self.get_object(pk)
         serializer = ProductsAdminSerializer(product)
         return Response(serializer.data)
-    def put(self, request, pk):
+    def patch(self, request, pk):
         product = self.get_object(pk)
-        # The serializer now handles the dictionary conversion internally
-        serializer = ProductsAdminSerializer(product, data=request.data)
+        serializer = ProductsAdminSerializer(product, data=request.data, partial=True)
         
         if serializer.is_valid():
             serializer.save()

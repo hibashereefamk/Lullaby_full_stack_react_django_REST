@@ -2,7 +2,7 @@ import { CheckCircle } from "lucide-react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
-const PaymentButton = ({ cartTotal, addressId, paymentMethod }) => {
+const PaymentButton = ({ cartTotal, addressId }) => {
     const navigate = useNavigate();
 
     const loadRazorpayScript = () => {
@@ -65,11 +65,11 @@ const PaymentButton = ({ cartTotal, addressId, paymentMethod }) => {
                 handler: async function (response) {
                     console.log("Payment Successful!", response);
                     try {
-                        // --- FIX 2: Use snake_case keys (address_id) to match Django ---
+                        
                         const orderData = {
-                            address_id: addressId,            // Fix: addressId -> address_id
-                            payment_method: paymentMethod || 'ONLINE', // Fix: paymentMethod -> payment_method
-                            payment_status: 'COMPLETED',      // Fix: Spelling 'COMPLEATED' -> 'COMPLETED'
+                            address_id: addressId,           
+                            payment_method: 'Online', 
+                            payment_status: 'Success',     
                             transaction_id: response.razorpay_payment_id
                         };
 

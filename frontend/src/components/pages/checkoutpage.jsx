@@ -14,6 +14,7 @@ function Checkout() {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentstatus, setpaymentstatus]=useState('');
   const [loading, setLoading] = useState(true);
 
   // Address Form State
@@ -133,6 +134,7 @@ function Checkout() {
       const orderData = {
         address_id: selectedAddressId,
         payment_method: paymentMethod,
+        payment_status: paymentstatus,
       };
 
       const res = await axios.post("http://127.0.0.1:8000/api/orders/", orderData, config);
@@ -350,7 +352,7 @@ function Checkout() {
                   <span>Total</span>
                   <span>₹{cart?.total_price || 0}</span>
                 </div>
-              </div>{paymentMethod ==='COD'?(
+              </div>{paymentMethod ==='COD'&& paymentstatus==='Pending'?(
                 <button
                 className="place-order-btn"
                 onClick={handlePlaceOrder}
@@ -360,7 +362,7 @@ function Checkout() {
               </button>
               ):(
                 <PaymentButton
-                cartTotal={cart.total_price} addressId={selectedAddressId} paymentMethod={'RAZORPAY'}/>
+                cartTotal={cart.total_price} addressId={selectedAddressId}/>
               )}
 
               

@@ -70,12 +70,4 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order {self.order.order_number}"
-class Payment(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE)
-    payment_id = models.CharField(max_length=100)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=50)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Payment {self.payment_id} for Order {self.order.order_number}"

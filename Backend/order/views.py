@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions,status
 from rest_framework.response import Response
-from .models import Order, OrderItem, Address, Payment
-from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer, PaymentSerializer,OrderAdminSerializer
+from .models import Order, OrderItem, Address
+from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer,OrderAdminSerializer
 from rest_framework import generics, permissions
 from .models import Address
 from .serializers import AddressSerializer
@@ -100,19 +100,7 @@ class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
         # This handles the lookup logic automatically
         return Address.objects.filter(user=self.request.user)
 
-        
-class PaymentViewSet(viewsets.ModelViewSet):
-    serializer_class = PaymentSerializer
-    permission_classes = [IsActiveUser]
-    pagination_class = None
-    def get_queryset(self):
-        return Payment.objects.filter(order__user=self.request.user)
 
-    def perform_create(self, serializer):
-        order = serializer.validated_data['order']
-        if order.user != self.request.user:
-            raise permissions.PermissionDenied("You cannot create a payment for someone else's order.")
-        serializer.save()
 
 
 
@@ -121,9 +109,8 @@ class AdminOrderListView(generics.ListAPIView):
     serializer_class =OrderAdminSerializer
 
     def get_queryset(self):
-        return Order.objects.select_related('user').prefetch_related('items').filter(
-            Q(payment_status ='Success')|Q(payment_method ='COD')
-            ).order_by('-created_at')
+    # Remove the .filter(...) part completely
+        return Order.objects.select_related('user').prefetch_related('items').all().order_by('-created_at')
 class AdminOrderUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAdminUser]
     serializer_class = OrderAdminSerializer
@@ -141,6 +128,8 @@ class AdminDashboardStatsView(APIView):
         total_products = Product.objects.count()
         total_users = CustomUser.objects.count()
         total_orders = Order.objects.count()
+        total_payment_success=Order.objects.filter(payment_status='Success').aggregate(sum=Sum('total_amount'))['sum'] or 0
+        total_payment_pending=Order.objects.filter(payment_status='Pending').aggregate(sum=Sum('total_amount'))['sum'] or 0
         status_counts = Order.objects.values('status').annotate(count=Count('id'))
 
         data = {
@@ -148,7 +137,9 @@ class AdminDashboardStatsView(APIView):
             "total_products": total_products,
             "total_users": total_users,
             "total_orders": total_orders,
-            "order_status_breakdown": status_counts
+            "order_status_breakdown": status_counts,
+            "total_payment_success":total_payment_success,
+            "total_payment_pending":total_payment_pending,
         }
         return Response(data)
 

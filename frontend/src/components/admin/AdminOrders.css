@@ -60,6 +60,7 @@
   display: inline-block;
 }
 
+
 .badge-success { background-color: #d1fae5; color: #065f46; } /* Green */
 .badge-warning { background-color: #fef3c7; color: #92400e; } /* Yellow */
 .badge-danger  { background-color: #fee2e2; color: #b91c1c; } /* Red */
@@ -85,8 +86,47 @@
   opacity: 0.5;
   pointer-events: none;
 }
-.btn-admin-action{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.badge-badge-success {
+  background-color: #d1fae5; /* Light Green Background */
+  color: #065f46;            /* Dark Green Text */
+  border: 1px solid #34d399;
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px; /* Makes it pill-shaped */
+  font-size: 0.75rem;   /* 12px */
+  font-weight: 600;     /* Semi-bold */
+  display: inline-block;
+  letter-spacing: 0.025em;
+  text-transform: uppercase; /* Green Border */
+}
+
+/* Warning (Yellow) - For Pending */
+.badge-badge-warning {
+  background-color: #fef3c7; /* Light Yellow Background */
+  color: #92400e;            /* Dark Orange Text */
+  border: 1px solid #fbbf24;
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px; /* Makes it pill-shaped */
+  font-size: 0.75rem;   /* 12px */
+  font-weight: 600;     /* Semi-bold */
+  display: inline-block;
+  letter-spacing: 0.025em;
+  text-transform: uppercase; /* Yellow Border */
+}
+
+/* Danger (Red) - For Failed or Cancelled */
+.badge-badge-danger {
+  background-color: #fee2e2; /* Light Red Background */
+  color: #991b1b;            /* Dark Red Text */
+  border: 1px solid #f87171;
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px; /* Makes it pill-shaped */
+  font-size: 0.75rem;   /* 12px */
+  font-weight: 600;     /* Semi-bold */
+  display: inline-block;
+  letter-spacing: 0.025em;
+  text-transform: uppercase; /* Red Border */
 }

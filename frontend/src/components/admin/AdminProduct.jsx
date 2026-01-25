@@ -158,17 +158,26 @@ const AdminProduct = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+  const handlediactivate = async (id, currentStatus) => {
+    const newStatus = !currentStatus; 
+
+    const action = newStatus ? "activate" : "deactivate";
+    
+    if (!window.confirm(`Are you sure you want to ${action} this product?`)) return;
+
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/admin/products/${id}/`, {
-        headers: getAuthHeaders()
-      });
-      fetchProducts(currentPageUrl);
+        await axios.patch(
+            `http://127.0.0.1:8000/api/admin/products/${id}/`, 
+            { is_active: newStatus }, 
+            { headers: getAuthHeaders() }
+        );
+
+        fetchProducts(currentPageUrl);
     } catch (err) {
-      alert("Failed to delete product.");
+        console.error("Error:", err);
+        alert("Failed to update status.");
     }
-  };
+};
 
   return (
     <div className="products-container">
@@ -215,9 +224,11 @@ const AdminProduct = () => {
                     </span>
                   </td>
                   <td className='btn-admin-action'>
-                    <button className="btn-edit" onClick={() => openEditModal(product)}>Edit</button>
-                    <button className="btn-danger" onClick={() => handleDelete(product.id)}>Delete</button>
+                    <button className="btn-view"onClick={() => navigate(`/admin/products/${product.id}`)}>View</button>
+                    <button className={`btn-action ${product.is_active ? 'btn-deactive' : 'btn-active'}`}  onClick={() => handlediactivate(product.id, product.is_active)}>
+                        {product.is_active ? 'Deactivate' : 'Activate'}</button>
                   </td>
+                  
                 </tr>
               ))}
               {products.length === 0 && <tr><td colSpan="7" className="text-center p-4">No products found.</td></tr>}

@@ -21,6 +21,7 @@ import AdminProduct from "./components/admin/AdminProduct";
 import AdminUsers from "./components/admin/AdminUsers";
 import AdminOrder from "./components/admin/AdminOrder";
 import Sidebar from "./components/admin/Sidebar";
+import AdminProductDetail from "./components/admin/AdminProductDetails";
 
 function App() {
  
@@ -49,6 +50,7 @@ function App() {
           <Route path="/admin/products" element={<AdminProduct/>}/>
           <Route path="/admin/users" element={<AdminUsers/>}/>
           <Route path="/admin/Orders" element={<AdminOrder/>}/>
+          <Route path="/admin/products/:id" element={<AdminProductDetail/>}/>
         </Route>
         </Route>
 

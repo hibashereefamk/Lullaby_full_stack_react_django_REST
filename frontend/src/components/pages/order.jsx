@@ -50,7 +50,7 @@ function Order() {
       case "Placed": return "#27ae60";  // Green
       case "Shipped": return "#2980b9"; // Blue
       case "Delivered": return "#2c3e50"; // Dark Blue
-      case "Cancelled": return "#c0392b"; // Red
+      case "Canceled": return "#c0392b"; // Red
       default: return "#95a5a6"; // Gray
     }
   };

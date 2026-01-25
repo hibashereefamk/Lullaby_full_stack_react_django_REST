@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './AdminOrders.css'; // Import the styles
+import './AdminOrders.css';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -75,13 +75,18 @@ const AdminOrders = () => {
     }
   };
 
-  // Helper to choose badge color
   const getPaymentBadge = (status) => {
-    if (status === 'Success') return 'badge badge-success';
-    if (status === 'Pending') return 'badge badge-warning';
+    if (!status) return 'badge-badge-danger';
+    
+
+    if (status === 'Success') {
+      return 'badge-badge-success';
+    }
+    if (status=== 'Pending') {
+      return 'badge-badge-warning';
+    }
     return 'badge badge-danger';
   };
-
   if (loading) return <div className="orders-container">Loading Orders...</div>;
   if (error) return <div className="orders-container" style={{color: 'red'}}>{error}</div>;
 
@@ -133,8 +138,8 @@ const AdminOrders = () => {
                 <td>
                   <div className="text-sm font-semibold">{order.payment_method}</div>
                   <span className={getPaymentBadge(order.payment_status)}>
-                    {order.payment_status}
-                  </span>
+                    {order.payment_status || "No Status"} 
+                       </span>
                 </td>
 
                 {/* Order Status & Action */}
@@ -145,10 +150,10 @@ const AdminOrders = () => {
                     className="status-select"
                   >
                     <option value="Pending">Pending</option>
-                    <option value="Processing">Processing</option>
+                    <option value="Placed">Placed</option>
                     <option value="Shipped">Shipped</option>
                     <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
+                    <option value="Canceled">Canceled</option>
                   </select>
                 </td>
 
