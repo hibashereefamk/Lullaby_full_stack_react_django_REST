@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Product, ProductVariant,Promotion,Category, Wishlist,Cart, CartItem
+import json
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -110,30 +111,66 @@ class CartSerializer(serializers.ModelSerializer):
         return total
     
 
+
 class ProductsAdminSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name', read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), source='category', write_only=True
     )
-    variants=ProductVariantLiteSerializer(many=True)
-    total_stock=serializers.SerializerMethodField()
-    class Meta:
-        model=Product
-        fields=['id','created_at','is_active','price','discount_price','total_stock','variants',
-                "category",'image','name','description','category_id','price','section']
+    variants = ProductVariantLiteSerializer(many=True)
+    total_stock = serializers.SerializerMethodField()
 
-    def get_total_stock(self,obj):
-        variants = obj.variants.all() if hasattr(obj,'variants') else obj.productvariant_set.all()
-        return sum(variant.stock for variant in variants)
-    
+    class Meta:
+        model = Product
+        fields = ['id', 'created_at', 'is_active', 'price', 'discount_price', 
+                  'total_stock', 'variants', 'category', 'image', 'name', 
+                  'description', 'category_id', 'section']
+
+    # 1. Parsing Logic (Keeps your data clean)
+    def to_internal_value(self, data):
+        if hasattr(data, 'dict'):
+            data = data.dict()
+        elif hasattr(data, 'copy'):
+            data = data.copy()
+
+        if 'variants' in data and isinstance(data['variants'], str):
+            try:
+                data['variants'] = json.loads(data['variants'])
+            except ValueError:
+                pass 
+        return super().to_internal_value(data)
+
+    # 2. CREATE METHOD (This fixes your current error!)
+    def create(self, validated_data):
+        # Remove variants from the main product data
+        variants_data = validated_data.pop('variants', [])
+        
+        # Create the Product first
+        product = Product.objects.create(**validated_data)
+        
+        # Loop through and create each variant linked to this product
+        for variant_item in variants_data:
+            ProductVariant.objects.create(product=product, **variant_item)
+            
+        return product
+
+    # 3. UPDATE METHOD (You already had this)
     def update(self, instance, validated_data):
         variants_data = validated_data.pop('variants', None)
+        
+        # Update standard fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
+        
+        # Update variants if provided
         if variants_data is not None:
-            instance.variants.all().delete()
+            instance.variants.all().delete() # Optional: Clear old variants
             for variant_item in variants_data:
                 ProductVariant.objects.create(product=instance, **variant_item)
 
         return instance
+
+    def get_total_stock(self, obj):
+        variants = obj.variants.all() if hasattr(obj,'variants') else obj.productvariant_set.all()
+        return sum(variant.stock for variant in variants)

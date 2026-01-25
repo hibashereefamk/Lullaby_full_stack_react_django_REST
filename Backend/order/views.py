@@ -117,12 +117,12 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
 
 class AdminOrderListView(generics.ListAPIView):
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
     serializer_class =OrderAdminSerializer
 
     def get_queryset(self):
         return Order.objects.select_related('user').prefetch_related('items').filter(
-            Q(Payment_status ='Success')|Q(Payment_method ='COD')
+            Q(payment_status ='Success')|Q(payment_method ='COD')
             ).order_by('-created_at')
 class AdminOrderUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAdminUser]

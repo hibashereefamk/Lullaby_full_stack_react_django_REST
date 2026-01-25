@@ -25,10 +25,20 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       // 1. Fetch data from AdminOrderListView
-      const response = await axios.get('http://127.0.0.1:8000/admin/orders/', {
+      const response = await axios.get('http://127.0.0.1:8000/api/admin/orders/', {
         headers: getAuthHeaders()
       });
-      setOrders(response.data);
+      console.log(setOrders(response.data));
+      if (Array.isArray(response.data)) {
+        setOrders(response.data);
+      } else if (response.data.results && Array.isArray(response.data.results)) {
+        // Handle paginated response
+        setOrders(response.data.results);
+      } else {
+        // Fallback to empty array to prevent crash
+        setOrders([]); 
+        console.error("Unexpected API response format");
+      }
       setLoading(false);
     } catch (err) {
       console.error("Fetch error:", err);
@@ -50,7 +60,7 @@ const AdminOrders = () => {
 
     try {
       // 2. Send PATCH request to AdminOrderUpdateView
-      await axios.patch(`http://127.0.0.1:8000/admin/orders/${orderId}/`, 
+      await axios.patch(`http://127.0.0.1:8000/api/admin/orders/${orderId}/`, 
         { status: newStatus }, 
         { headers: getAuthHeaders() }
       );
@@ -93,7 +103,7 @@ const AdminOrders = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {Array.isArray(orders) && orders.map((order) => (
               <tr key={order.id}>
                 
                 {/* ID & Order Number */}

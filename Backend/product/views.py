@@ -169,31 +169,28 @@ class ProductAdminListAPIView(APIView):
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
-class ProductAdminDetailAPIView(APIView):
-    permission_classes=[IsAdminUser]
-    def get_object(self,pk):
-        return get_object_or_404(Product,pk=pk)
-    def get(self,request,pk):
-        product=self.get_object(pk)
-        serializer =ProductsAdminSerializer(product)
-        return Response(serializer.data)
-    def put(self,request,pk):
-        product =self.get_object(pk)
-        data = request.data.copy()
 
-        # 2. Check if 'variants' is a string and parse it
-        if 'variants' in data and isinstance(data['variants'], str):
-            try:
-                data['variants'] = json.loads(data['variants'])
-            except ValueError:
-                return Response({"error": "Invalid variants JSON"}, status=status.HTTP_400_BAD_REQUEST)
-        serializer =ProductsAdminSerializer(product,data=request.data)
+class ProductAdminDetailAPIView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get_object(self, pk):
+        return get_object_or_404(Product, pk=pk)
+
+    def get(self, request, pk):
+        product = self.get_object(pk)
+        serializer = ProductsAdminSerializer(product)
+        return Response(serializer.data)
+    def put(self, request, pk):
+        product = self.get_object(pk)
+        # The serializer now handles the dictionary conversion internally
+        serializer = ProductsAdminSerializer(product, data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    def delete(self,request,pk):
-        product =self.get_object(pk)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, pk):
+        product = self.get_object(pk)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

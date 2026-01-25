@@ -16,14 +16,7 @@ function Cart() {
       "Content-Type": "application/json",
     },
   };
-useEffect(() => {
-    if (token) {
-      fetchWishlist();
-    } else {
-      alert("Please login to view your cart");
-      navigate("/login");
-    }
-  }, [token]);
+
 
   useEffect(() => {
     const newTotal = cartItems.reduce(
@@ -39,7 +32,14 @@ useEffect(() => {
       .then(res => setCartItems(res.data))
       .catch(err => console.error("Error fetching cart", err));
   ;}
-
+useEffect(() => {
+    if (token) {
+      fetchCart();
+    } else {
+      alert("Please login to view your cart");
+      navigate("/login");
+    }
+  }, [token]);
   
   const updateSize = async (id, newSize) => {
     try {

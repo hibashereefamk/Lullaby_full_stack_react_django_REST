@@ -289,9 +289,9 @@ const AdminProduct = () => {
               <div className="form-group">
                 <label>Section</label>
                 <select name="section" className="form-input" value={formData.section} onChange={handleInputChange}>
-                  <option value="Mother">Boy</option>
-                  <option value="Baby">Girl</option>
-                  <option value="Toddler">Baby</option>
+                  <option value="BOY">Boy</option>
+                  <option value="GIRL">Girl</option>
+                  <option value="BABY">Baby</option>
                 </select>
               </div>
 
