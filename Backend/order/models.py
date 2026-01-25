@@ -32,6 +32,7 @@ class Order(models.Model):
         ('Placed', 'Placed'),
         ('Shipped', 'Shipped'),
         ('Delivered', 'Delivered'),
+        ('Canceled','Canceled')
     ]
     order_number = models.CharField(max_length=20, unique=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

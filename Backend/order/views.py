@@ -14,6 +14,9 @@ from django.conf import settings
 from rest_framework.permissions import IsAdminUser
 from django.db.models import Q
 from product.permission import IsActiveUser
+from Users.models import CustomUser
+from product.models import Product
+from django.db.models import Sum,Count
 
 class CreateOrderViwe(APIView):
     permission_classes = [IsActiveUser]
@@ -129,6 +132,23 @@ class AdminOrderUpdateView(generics.RetrieveUpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
-    
 
+class AdminDashboardStatsView(APIView):
+    permission_classes = [IsAdminUser] 
+
+    def get(self, request):
+        total_income = Order.objects.aggregate(sum=Sum('total_amount'))['sum'] or 0
+        total_products = Product.objects.count()
+        total_users = CustomUser.objects.count()
+        total_orders = Order.objects.count()
+        status_counts = Order.objects.values('status').annotate(count=Count('id'))
+
+        data = {
+            "total_income": total_income,
+            "total_products": total_products,
+            "total_users": total_users,
+            "total_orders": total_orders,
+            "order_status_breakdown": status_counts
+        }
+        return Response(data)
 

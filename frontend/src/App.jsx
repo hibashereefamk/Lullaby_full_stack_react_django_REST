@@ -16,6 +16,12 @@ import Order from "./components/pages/order";
 import ResetPassword from "./components/auth/ResetPassword";
 import RequestResetPassword from "./components/auth/RequestResetPassword";
 import AdminRoute from "./components/admin/ProtectedRoute";
+import Dashboard from "./components/admin/Dashboard";
+import AdminProduct from "./components/admin/AdminProduct";
+import AdminUsers from "./components/admin/AdminUsers";
+import AdminOrder from "./components/admin/AdminOrder";
+import Sidebar from "./components/admin/Sidebar";
+
 function App() {
  
   
@@ -37,10 +43,13 @@ function App() {
         <Route path="/order" element={<Order/>} />
         <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
         <Route path="/request-reset" element={<RequestResetPassword />} />
-        <Route element={<AdminRoute user={currentUser}/>}>
-        
-        
-        
+        <Route path="/admin" element={<AdminRoute />}>
+          <Route element={<Sidebar/>}>
+          <Route index element={<Dashboard />} />
+          <Route path="/admin/products" element={<AdminProduct/>}/>
+          <Route path="/admin/users" element={<AdminUsers/>}/>
+          <Route path="/admin/Order" element={<AdminOrder/>}/>
+        </Route>
         </Route>
 
 

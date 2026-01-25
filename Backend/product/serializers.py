@@ -119,9 +119,21 @@ class ProductsAdminSerializer(serializers.ModelSerializer):
     total_stock=serializers.SerializerMethodField()
     class Meta:
         model=Product
-        fields=['id','created_at','is_active','discount_price','total_stock','variants',
-                "category",'image','description','category_id','price','section']
+        fields=['id','created_at','is_active','price','discount_price','total_stock','variants',
+                "category",'image','name','description','category_id','price','section']
 
     def get_total_stock(self,obj):
         variants = obj.variants.all() if hasattr(obj,'variants') else obj.productvariant_set.all()
         return sum(variant.stock for variant in variants)
+    
+    def update(self, instance, validated_data):
+        variants_data = validated_data.pop('variants', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if variants_data is not None:
+            instance.variants.all().delete()
+            for variant_item in variants_data:
+                ProductVariant.objects.create(product=instance, **variant_item)
+
+        return instance

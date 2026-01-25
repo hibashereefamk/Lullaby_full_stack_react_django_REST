@@ -18,7 +18,7 @@ function Profile() {
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
 
-  // Base URL for API
+ 
   const BASE_URL = "http://127.0.0.1:8000";
 
   useEffect(() => {

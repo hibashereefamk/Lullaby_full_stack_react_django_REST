@@ -178,7 +178,7 @@ class LogoutView(APIView):
 
 @method_decorator(never_cache, name='dispatch')
 class UserProfileView(APIView):
-    permission_classes = [IsActiveUser]
+    ppermission_classes =[IsActiveUser]
     def get(self, request):
         user = request.user
         serializer = UserProfileSerializer(user)

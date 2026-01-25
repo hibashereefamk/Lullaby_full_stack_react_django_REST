@@ -1,0 +1,87 @@
+/* Sidebar Container */
+.sidebar {
+  width: 260px;
+  height: 100vh; /* Full viewport height */
+  background-color: #ffffff;
+  border-right: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  position: fixed; /* Keeps sidebar sticky on the left */
+  top: 0;
+  left: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  z-index: 1000;
+}
+
+/* 1. Header & Logo */
+.sidebar-header {
+  padding: 30px 24px;
+  display: flex;
+  align-items: center;
+
+}
+
+.sidebar-nav {
+  flex: 1; /* Pushes footer to bottom */
+  padding: 20px 16px;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  margin-bottom: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #718096; /* Soft gray for inactive state */
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: #F7FAFC;
+  color: #2D3748;
+}
+
+/* Active State Styling (Like the teal bar in the picture) */
+.nav-link.active {
+  background-color: #E6FFFA; /* Very light teal background */
+  color: #319795; /* Teal text */
+}
+
+/* If you prefer the dark bar on the left like some dashboards: */
+.nav-link.active {
+  position: relative;
+}
+
+
+.sidebar-footer {
+  padding: 24px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+.user-role {
+  font-size: 12px;
+  color: #A0AEC0;
+  margin: 0;
+}
+
+.admin-content {
+  margin-left: 300px; 
+  min-height: 100vh;
+}

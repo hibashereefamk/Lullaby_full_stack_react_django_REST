@@ -1,12 +1,16 @@
-import {Navigate,Outlet} from 'ract-rounter-dom';
+import { useNavigate, Outlet,Navigate } from 'react-router-dom';
 
-const AdminRoute=({user,allowedRoles})=>{
-    if (!user){
-        return <Navigate to='/login'replace />;
+const AdminRoute=()=>{
+    const navigate = useNavigate()
+    const role=localStorage.getItem('role')
+    const token=localStorage.getItem('access_token')
+
+    if (!token){
+        navigate('/login')
     }
-    if (!user.is_staff){
-        return<Navigate to='/'replace />
+    else if (role==='admin'){
+        return <Outlet/>
     }
-    return <Outlet/>
+    return <Navigate to={'/' } replace/>
 }
 export default AdminRoute;

@@ -1,0 +1,107 @@
+/* AdminUsers.css */
+
+.users-container {
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.users-header {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 24px;
+}
+
+/* --- Table Styles --- */
+.users-table-wrapper {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.users-table th {
+  background-color: #e5e7eb;
+  color: #374151;
+  font-weight: 600;
+  text-align: left;
+  padding: 14px 20px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid #d1d5db;
+}
+
+.users-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #4b5563;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.users-table tr:hover {
+  background-color: #f9fafb;
+}
+
+/* --- Status Badges --- */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.status-active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-blocked {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* --- Action Buttons --- */
+.btn-action {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+}
+
+.btn-block {
+  background-color: #fff1f2;
+  color: #e11d48;
+  border: 1px solid #e11d48;
+}
+
+.btn-block:hover {
+  background-color: #e11d48;
+  color: white;
+}
+
+.btn-unblock {
+  background-color: #ecfdf5;
+  color: #059669;
+  border: 1px solid #059669;
+}
+
+.btn-unblock:hover {
+  background-color: #059669;
+  color: white;
+}

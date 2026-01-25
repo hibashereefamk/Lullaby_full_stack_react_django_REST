@@ -127,9 +127,6 @@
   padding: 16px;
 }
 
-/* ... (Rest of your existing Product Card CSS) ... */
-
-/* Search Wrapper (Keep yours) */
 .search-wrapper {
   flex: 2;
   display: flex;

@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.pagination import PageNumberPagination
-
+import json
 class PromotionViewSet(viewsets.ModelViewSet):
     queryset = Promotion.objects.filter(is_active=True) 
     serializer_class = PromotionSerializer
@@ -158,6 +158,12 @@ class ProductAdminListAPIView(APIView):
         serializer = ProductsAdminSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
     def post(self,request):
+        data = request.data.copy()
+        if 'variants' in data and isinstance(data['variants'], str):
+            try:
+                data['variants'] = json.loads(data['variants'])
+            except ValueError:
+                return Response({"error": "Invalid variants JSON"}, status=status.HTTP_400_BAD_REQUEST)
         serializer =ProductsAdminSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -174,6 +180,14 @@ class ProductAdminDetailAPIView(APIView):
         return Response(serializer.data)
     def put(self,request,pk):
         product =self.get_object(pk)
+        data = request.data.copy()
+
+        # 2. Check if 'variants' is a string and parse it
+        if 'variants' in data and isinstance(data['variants'], str):
+            try:
+                data['variants'] = json.loads(data['variants'])
+            except ValueError:
+                return Response({"error": "Invalid variants JSON"}, status=status.HTTP_400_BAD_REQUEST)
         serializer =ProductsAdminSerializer(product,data=request.data)
         if serializer.is_valid():
             serializer.save()
