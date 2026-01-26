@@ -18,7 +18,11 @@ const Sidebar = () => {
         <NavLink to="/" className="logo-soft">
           LULLABY
         </NavLink>
-      </div>
+        </div>
+        <div className="user-avatar">
+        <p className="user-role">Store Manager</p>
+        </div>
+      
 
       {/* 2. Navigation Menu */}
       <nav className="sidemenu-nav">
@@ -57,14 +61,13 @@ const Sidebar = () => {
       {/* 3. User Profile Footer (Like the picture) */}
       <div className="sidemenu-footer">
         
-        <div className="user-avatar">
-          <p className="user-role">Store Manager</p>
+        
            <div className="action-btn logout-btn" onClick={handleLogout}>
           <LogOut size={18}/> <span className="link-text">LOGOUT</span>
         </div>
         </div>
        
-      </div>
+      
     </aside>
     <main className="admin-content">
                     <Outlet />

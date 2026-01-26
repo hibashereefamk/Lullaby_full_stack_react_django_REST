@@ -213,7 +213,7 @@ function Products() {
                                 <div className="price-section">
                                     <p className="prdt-price">₹{hasDiscount ? product.discount_price : product.price}</p>
                                     {hasDiscount && <span className="discount-price">₹{product.price}</span>}
-                                    <Rating value={product.rating} />
+                                    <Rating value={product.rating} text={product.rating ? `${product.rating}k reviews`:''}/>
                                 </div>
                             </div>
                         </div>

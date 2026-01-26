@@ -134,7 +134,7 @@ function Checkout() {
       const orderData = {
         address_id: selectedAddressId,
         payment_method: paymentMethod,
-        payment_status: paymentstatus,
+        payment_status: 'Pending',
       };
 
       const res = await axios.post("http://127.0.0.1:8000/api/orders/", orderData, config);
@@ -352,7 +352,7 @@ function Checkout() {
                   <span>Total</span>
                   <span>₹{cart?.total_price || 0}</span>
                 </div>
-              </div>{paymentMethod ==='COD'&& paymentstatus==='Pending'?(
+              </div>{paymentMethod ==='COD'?(
                 <button
                 className="place-order-btn"
                 onClick={handlePlaceOrder}

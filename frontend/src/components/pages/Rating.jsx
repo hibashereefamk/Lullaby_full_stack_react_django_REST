@@ -20,8 +20,6 @@ function Rating({ value, text,style }) {
           )}
         </span>
       ))}
-
-      {/* INLINE CSS: Style for the text (e.g., "12 reviews") */}
       <span style={{ marginLeft: '8px', fontWeight: 'bold', fontSize: '14px', color: '#0d7a25' }}>
         {text && text}
       </span>

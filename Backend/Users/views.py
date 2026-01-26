@@ -127,17 +127,17 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
 
-            otp = generate_otp()
-            user.otp = otp
-            user.otp_created = timezone.now()
-            user.save()
+            # otp = generate_otp()
+            # user.otp = otp
+            # user.otp_created = timezone.now()
+            # user.save()
 
-            send_mail(
-                subject="Your OTP Code",
-                message=f"Your OTP is {otp}",
-                from_email="hibashareefamk@gmail.com",
-                recipient_list=[user.email],
-            )
+            # send_mail(
+            #     subject="Your OTP Code",
+            #     message=f"Your OTP is {otp}",
+            #     from_email="hibashareefamk@gmail.com",
+            #     recipient_list=[user.email],
+            # )
 
             return Response(
                 {"message": "Registered successfully. OTP sent to email."},

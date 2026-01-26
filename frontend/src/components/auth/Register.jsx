@@ -22,7 +22,8 @@ function Register() {
       const response = await axios.post("http://127.0.0.1:8000/api/register/", formData);
       console.log(response.data);
       alert("registraction successfully")
-      navigate("/otp-verify", { state: { email: formData.email } });
+      // navigate("/otp-verify", { state: { email: formData.email } });
+      navigate('/login')
 
     }catch(error){
       console.log('error:',error);

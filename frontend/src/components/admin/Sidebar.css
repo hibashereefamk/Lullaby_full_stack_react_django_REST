@@ -18,6 +18,7 @@
   padding: 30px 24px;
   display: flex;
   align-items: center;
+  justify-content: center;
 
 }
 
@@ -73,7 +74,11 @@
   align-items: center;
   gap: 12px;
 }
-
+.user-avatar{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .user-role {
   font-size: 12px;
