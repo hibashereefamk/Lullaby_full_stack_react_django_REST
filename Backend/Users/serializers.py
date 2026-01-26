@@ -15,17 +15,22 @@ from .models import CustomUser
 user = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ['name','email','phone_number',  'password',]
+        fields = ['name','email','phone_number',  'password','confirm_password']
+    def validate(self, attrs):
+        if attrs['password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({"password": "Password fields do not match."})
+        attrs.pop('confirm_password')
+        return attrs
 
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
             email=validated_data['email'],
             username=validated_data['email'],
-            password=validated_data['password'],
+            # password=validated_data['password'],
             name=validated_data.get('name'),
             phone_number=validated_data.get('phone_number'),
         )
@@ -56,7 +61,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username','name', 'email','profile_picture', 'phone_number','bio','is_staff','created_at']
-        read_only_fields = ['id', 'email', 'is_staff','created_at']
+        read_only_fields = ['id', 'is_staff','created_at']
 
 class ResetPasswordRequestSerializer(serializers.Serializer):
     email =serializers.EmailField(min_length = 2)
@@ -71,13 +76,14 @@ class ResetPasswordRequestSerializer(serializers.Serializer):
     
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=8, write_only=True)
+    confirm_password =serializers.CharField(min_length=8, write_only=True)
     token = serializers.CharField(write_only=True)
     uidb64 = serializers.CharField(write_only=True)
 
-    class Meta:
-        fields = ['password', 'token', 'uidb64']
 
     def validate(self, attrs):
+        if attrs.get('password') != attrs.get('confirm_password'):
+            raise serializers.ValidationError({"password": "Password fields do not match."})
         try:
             password = attrs.get('password')
             token = attrs.get('token')

@@ -7,6 +7,8 @@ const ResetPassword = () => {
     const { uid, token } = useParams();
     
     const [password, setPassword] = useState('');
+    const [confirm_password, setconfirm_password] = useState('');
+
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
@@ -16,6 +18,7 @@ const ResetPassword = () => {
         // 2. Prepare the data exactly how your Django Serializer expects it
         const data = {
             password: password,
+            confirm_password:confirm_password,
             token: token,
             uidb64: uid
         };
@@ -34,7 +37,7 @@ const ResetPassword = () => {
 
         } catch (error) {
             setMessage("Error: The link is invalid or expired.");
-            console.error(error);
+            console.error(error.response.data);
         }
     };
 
@@ -49,6 +52,15 @@ const ResetPassword = () => {
                         type="password" 
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        required 
+                        minLength={6}
+                        style={{ width: '100%', padding: '8px' }}
+                    />
+                    <label>Confirm Password:</label>
+                    <input 
+                        type="password" 
+                        value={confirm_password}
+                        onChange={(e) => setconfirm_password(e.target.value)}
                         required 
                         minLength={6}
                         style={{ width: '100%', padding: '8px' }}

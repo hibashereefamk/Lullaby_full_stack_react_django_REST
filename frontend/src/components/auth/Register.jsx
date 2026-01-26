@@ -9,6 +9,7 @@ function Register() {
     email: "",
     phone_number:"",
     password:"",
+    confirm_password:"",
   });
    const navigate=useNavigate();
   const handleChange = (e) => {
@@ -69,6 +70,13 @@ function Register() {
           type="password"
           name="password"
           placeholder="Password"
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="confirm_password"
+          placeholder="confirm Password"
           onChange={handleChange}
           required
         />

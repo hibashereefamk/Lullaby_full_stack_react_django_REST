@@ -126,6 +126,7 @@ class RegisterView(APIView):
 
         if serializer.is_valid():
             user = serializer.save()
+            
 
             # otp = generate_otp()
             # user.otp = otp
