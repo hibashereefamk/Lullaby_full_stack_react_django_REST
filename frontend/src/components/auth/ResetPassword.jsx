@@ -36,8 +36,13 @@ const ResetPassword = () => {
             }, 2000);
 
         } catch (error) {
+            if (error.response) {
+        // This prints the exact JSON from Django to your browser console
+        console.log("Server Errors:", error.response.data); 
+        alert(JSON.stringify(error.response.data)); 
+    }
             setMessage("Error: The link is invalid or expired.");
-            console.error(error.response.data);
+           
         }
     };
 

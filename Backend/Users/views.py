@@ -31,16 +31,11 @@ class GoogleLoginView(APIView):
             return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # 1. Verify the token with Google
-            # Replace CLIENT_ID with your actual Client ID from Google Cloud
             idinfo = id_token.verify_oauth2_token(token, requests.Request(), "515795235834-u4s88flf4tmfokjn6kfrhrejncl8jjcc.apps.googleusercontent.com",clock_skew_in_seconds=10)
 
-            # 2. Get user info from the verified token
             email = idinfo['email']
             first_name = idinfo.get('given_name', '')
             last_name = idinfo.get('family_name', '')
-
-            # 3. Check if user exists, otherwise create them
             user, created = CustomUser.objects.get_or_create(username=email, defaults={
                 'email': email,
                 'first_name': first_name,
@@ -48,24 +43,20 @@ class GoogleLoginView(APIView):
                 
             })
             
-            # If creating a new user, you might want to set an unusable password
             if created:
                 user.set_unusable_password()
                 user.save()
-
-            # 4. Create a Django Token (JWT approach shown here)
             refresh = RefreshToken.for_user(user)
             
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-                'role': user.role,       # <--- Added this (React needs it)
+                'role': user.role,       
                 'email': user.email,
                 'name': user.name,
             })
 
         except ValueError:
-            # Invalid token
             return Response({'error': 'Invalid Google Token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -128,17 +119,17 @@ class RegisterView(APIView):
             user = serializer.save()
             
 
-            # otp = generate_otp()
-            # user.otp = otp
-            # user.otp_created = timezone.now()
-            # user.save()
+            otp = generate_otp()
+            user.otp = otp
+            user.otp_created = timezone.now()
+            user.save()
 
-            # send_mail(
-            #     subject="Your OTP Code",
-            #     message=f"Your OTP is {otp}",
-            #     from_email="hibashareefamk@gmail.com",
-            #     recipient_list=[user.email],
-            # )
+            send_mail(
+                subject="Your OTP Code",
+                message=f"Your OTP is {otp}",
+                from_email="hibashareefamk@gmail.com",
+                recipient_list=[user.email],
+            )
 
             return Response(
                 {"message": "Registered successfully. OTP sent to email."},
@@ -179,7 +170,7 @@ class LogoutView(APIView):
 
 @method_decorator(never_cache, name='dispatch')
 class UserProfileView(APIView):
-    ppermission_classes =[IsActiveUser]
+    permission_classes =[IsActiveUser]
     def get(self, request):
         user = request.user
         serializer = UserProfileSerializer(user)
