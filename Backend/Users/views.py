@@ -232,8 +232,8 @@ class AdminUserManagementView(APIView):
     def get(self,request):
         user_id =request.query_params.get('user_id')
         if user_id:
-            user =get_object_or_404(CustomUser,id=user_id)
-            serializer =AdminUserStatuserializer(user)
+            user = get_object_or_404(CustomUser,id=user_id)
+            serializer = AdminUserStatuserializer(user)
         else:
             users =CustomUser.objects.all().order_by('-id')
             serializer=AdminUserStatuserializer(users,many=True)

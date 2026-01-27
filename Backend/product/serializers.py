@@ -12,7 +12,7 @@ class CategorySerializer(serializers.ModelSerializer):
         read_only_fields = ['slug']
 
 class PromotionSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True) # Forces absolute URL
+    image = serializers.ImageField(use_url=True) 
 
     class Meta:
         model = Promotion
@@ -20,13 +20,13 @@ class PromotionSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at']
 
 
-# class ProductVariantSerializer(serializers.ModelSerializer):
-#     product_name = serializers.ReadOnlyField(source='product.name')
-#     product_id = serializers.ReadOnlyField(source='product.id')
-#     product_image = serializers.ImageField(source='product.image', read_only=True)
-#     class Meta:
-#         model = ProductVariant
-#         fields = ['id', 'product_id', 'product_name', 'product_image', 'size', 'stock']
+class ProductVariantSerializer(serializers.ModelSerializer):
+    product_name = serializers.ReadOnlyField(source='product.name')
+    product_id = serializers.ReadOnlyField(source='product.id')
+    product_image = serializers.ImageField(source='product.image', read_only=True)
+    class Meta:
+        model = ProductVariant
+        fields = ['id', 'product_id', 'product_name', 'product_image', 'size', 'stock']
         
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -45,6 +45,7 @@ class ProductVariantLiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariant
         fields = ['id', 'size', 'stock']
+
 class ProductDetailSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
     variants = ProductVariantLiteSerializer(many=True, read_only=True)
@@ -126,7 +127,6 @@ class ProductsAdminSerializer(serializers.ModelSerializer):
                   'total_stock', 'variants', 'category', 'image', 'name', 
                   'description', 'category_id', 'section']
 
-    # 1. Parsing Logic (Keeps your data clean)
     def to_internal_value(self, data):
         if hasattr(data, 'dict'):
             data = data.dict()
@@ -140,32 +140,21 @@ class ProductsAdminSerializer(serializers.ModelSerializer):
                 pass 
         return super().to_internal_value(data)
 
-    # 2. CREATE METHOD (This fixes your current error!)
     def create(self, validated_data):
-        # Remove variants from the main product data
         variants_data = validated_data.pop('variants', [])
-        
-        # Create the Product first
         product = Product.objects.create(**validated_data)
-        
-        # Loop through and create each variant linked to this product
         for variant_item in variants_data:
             ProductVariant.objects.create(product=product, **variant_item)
             
         return product
-
-    # 3. UPDATE METHOD (You already had this)
     def update(self, instance, validated_data):
         variants_data = validated_data.pop('variants', None)
-        
-        # Update standard fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
         
-        # Update variants if provided
         if variants_data is not None:
-            instance.variants.all().delete() # Optional: Clear old variants
+            instance.variants.all().delete() 
             for variant_item in variants_data:
                 ProductVariant.objects.create(product=instance, **variant_item)
 
