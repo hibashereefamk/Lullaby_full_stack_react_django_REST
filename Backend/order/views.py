@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions,status
+from rest_framework import viewsets,status
 from rest_framework.response import Response
 from .models import Order, OrderItem, Address
 from .serializers import OrderSerializer, OrderItemSerializer, AddressSerializer,OrderAdminSerializer
-from rest_framework import generics, permissions
+from rest_framework import generics
 from .models import Address
 from .serializers import AddressSerializer
 from django.db import transaction
@@ -12,7 +12,6 @@ import razorpay
 from rest_framework.views import APIView
 from django.conf import settings
 from rest_framework.permissions import IsAdminUser
-from django.db.models import Q
 from product.permission import IsActiveUser
 from Users.models import CustomUser
 from product.models import Product
@@ -21,7 +20,6 @@ from django.db.models import Sum,Count
 class CreateOrderViwe(APIView):
     permission_classes = [IsActiveUser]
     def post(self,request):
-       # Fix: Add .Client
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
         amount_in_rupees = request.data.get('amount')
         amount_in_paisa = int(amount_in_rupees) * 100
@@ -33,15 +31,14 @@ class CreateOrderViwe(APIView):
         }
         
         try:
-            # 3. Ask Razorpay to create an order
+           
             order = client.order.create(data=data)
             
-            # 4. Send the Order ID and Key ID back to React
             return Response({
-                'order_id': order['id'],      # e.g., "order_Hjkh8908..."
+                'order_id': order['id'],     
                 'amount': order['amount'],
                 'currency': order['currency'],
-                'key': settings.RAZORPAY_KEY_ID # Send the Public Key ID to React
+                'key': settings.RAZORPAY_KEY_ID
             }, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -77,8 +74,6 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     pagination_class = None
     def get_queryset(self):
         return OrderItem.objects.filter(order__user=self.request.user)
-    
-
 
 
 class AddressListCreateView(generics.ListCreateAPIView):
@@ -86,31 +81,27 @@ class AddressListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsActiveUser]
     pagination_class = None
     def get_queryset(self):
-        
         return Address.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-       
         serializer.save(user=self.request.user)
+
+
+
 class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AddressSerializer
     permission_classes = [IsActiveUser]
     
     def get_queryset(self):
-        # This handles the lookup logic automatically
         return Address.objects.filter(user=self.request.user)
 
 
-
-
-
 class AdminOrderListView(generics.ListAPIView):
-    # permission_classes = [IsAdminUser]
     serializer_class =OrderAdminSerializer
 
     def get_queryset(self):
-    # Remove the .filter(...) part completely
         return Order.objects.select_related('user').prefetch_related('items').all().order_by('-created_at')
+    
 class AdminOrderUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAdminUser]
     serializer_class = OrderAdminSerializer

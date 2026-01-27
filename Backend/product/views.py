@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
 import json
 class PromotionViewSet(viewsets.ModelViewSet):
     queryset = Promotion.objects.filter(is_active=True) 
@@ -139,15 +140,56 @@ class CartItemViewSet(viewsets.ModelViewSet):
         return super().partial_update(request, *args, **kwargs)
     
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
+from .models import Product
+from .serializers import ProductsAdminSerializer
+
 class ProductAdminListAPIView(APIView):
-    permission_classes=[IsAdminUser]
-    def get(self,request):
-        products =Product.objects.all().order_by('-created_at')
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        queryset = Product.objects.all().order_by('-created_at')
+        category_id = request.query_params.get('category')
+        in_stock = request.query_params.get('in_stock')
+
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+        
+        if in_stock:
+            is_in_stock = in_stock.lower() == 'true'
+            if is_in_stock:
+                queryset = queryset.filter(stock__gt=0)
+            else:
+                queryset = queryset.filter(stock=0)
+
+        search_query = request.query_params.get('search')
+        if search_query:
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) | 
+                Q(description__icontains=search_query) |
+                Q(sku__icontains=search_query)
+            )
+
+        ordering = request.query_params.get('ordering')
+        if ordering:
+        
+            valid_fields = ['price', 'stock', 'created_at', 'name']
+            check_field = ordering.lstrip('-')
+            if check_field in valid_fields:
+                queryset = queryset.order_by(ordering)
+
+
         paginator = PageNumberPagination()
         paginator.page_size = 10 
-        result_page = paginator.paginate_queryset(products, request)
+        result_page = paginator.paginate_queryset(queryset, request)
+        
         serializer = ProductsAdminSerializer(result_page, many=True)
+        
         return paginator.get_paginated_response(serializer.data)
+
     def post(self,request):
         data = request.data.copy()
         if 'variants' in data and isinstance(data['variants'], str):

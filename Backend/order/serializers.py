@@ -1,6 +1,5 @@
 from .models import Order, OrderItem, Address
 from product.serializers import ProductSerializer, ProductVariantLiteSerializer
-
 from rest_framework import serializers
 from product.models import Cart,ProductVariant
 
@@ -112,10 +111,6 @@ class OrderSerializer(serializers.ModelSerializer):
         
         return order
 
-
-
-
-
  
 class OrderAdminSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(read_only=True, many=True)
@@ -127,14 +122,6 @@ class OrderAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
-            'id', 
-            'order_number', 
-            'status', 
-            'user',           
-            'items',          
-            'total_amount', 
-            'payment_method', 
-            'payment_status', 
-            'address',        
+            'id', 'order_number','status','user','items','total_amount','payment_method','payment_status', 'address',        
             'order_date'
         ]
