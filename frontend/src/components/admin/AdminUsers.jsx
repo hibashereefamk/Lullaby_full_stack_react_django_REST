@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './AdminUsers.css'; // Import the styles
+import './AdminUsers.css';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -9,7 +9,6 @@ const AdminUsers = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Helper for Auth Headers
   const getAuthHeaders = () => {
     const token = localStorage.getItem("access_token");
     return {
@@ -24,7 +23,6 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      // 1. Fetch all users
       const response = await axios.get('http://127.0.0.1:8000/api/admin/users-details/', {
         headers: getAuthHeaders()
       });
@@ -42,34 +40,29 @@ const AdminUsers = () => {
   };
 
   const handleToggleStatus = async (userId, currentStatus) => {
-    const newStatus = !currentStatus; // Toggle boolean
+    const newStatus = !currentStatus;
     const actionName = newStatus ? "Unblock" : "Block";
 
     if (!window.confirm(`Are you sure you want to ${actionName} this user?`)) return;
 
-    // Optimistic UI Update (Update screen before server responds)
     const originalUsers = [...users];
     setUsers(users.map(user => 
       user.id === userId ? { ...user, is_active: newStatus } : user
     ));
 
     try {
-      // 2. Send PATCH request
-      // Note: Your backend looks for user_id in query params (?user_id=1), not the URL path
       await axios.patch(
         'http://127.0.0.1:8000/api/admin/users-details/', 
-        { is_active: newStatus }, // Body
+        { is_active: newStatus },
         { 
           headers: getAuthHeaders(),
-          params: { user_id: userId } // This adds ?user_id=X to the URL
+          params: { user_id: userId }
         }
       );
-      // Success - logic handled by optimistic update above
       console.log(`User ${userId} status changed to ${newStatus}`);
 
     } catch (err) {
       console.error("Update error:", err);
-      // Revert if server fails
       setUsers(originalUsers);
       alert("Failed to update user status. Check if backend method is named 'patch' not 'path'.");
     }
@@ -98,26 +91,20 @@ const AdminUsers = () => {
             {users.map((user) => (
               <tr key={user.id}>
                 
-                {/* ID */}
                 <td>#{user.id}</td>
 
-                {/* Name */}
                 <td style={{fontWeight: '600'}}>{user.name || "N/A"}</td>
 
-                {/* Email */}
                 <td>{user.email}</td>
 
-                {/* Phone */}
                 <td>{user.phone_number || "-"}</td>
 
-                {/* Status Badge */}
                 <td>
                   <span className={`status-badge ${user.is_active ? 'status-active' : 'status-blocked'}`}>
                     {user.is_active ? 'Active' : 'Blocked'}
                   </span>
                 </td>
 
-                {/* Toggle Button */}
                 <td>
                   {user.is_active ? (
                     <button 

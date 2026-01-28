@@ -1,5 +1,3 @@
-/* AdminOrders.css */
-
 .orders-container {
   padding: 24px;
   background-color: #f8f9fa;
@@ -14,18 +12,17 @@
   margin-bottom: 24px;
 }
 
-/* --- Table Styles --- */
 .orders-table-wrapper {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  overflow-x: auto; /* Allows scrolling on small screens */
+  overflow-x: auto;
 }
 
 .orders-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px; /* Ensures table doesn't get too squashed */
+  min-width: 800px;
 }
 
 .orders-table th {
@@ -50,7 +47,6 @@
   background-color: #f9fafb;
 }
 
-/* --- Badges --- */
 .badge {
   padding: 4px 8px;
   border-radius: 4px;
@@ -60,13 +56,11 @@
   display: inline-block;
 }
 
+.badge-success { background-color: #d1fae5; color: #065f46; }
+.badge-warning { background-color: #fef3c7; color: #92400e; }
+.badge-danger  { background-color: #fee2e2; color: #b91c1c; }
+.badge-blue    { background-color: #dbeafe; color: #1e40af; }
 
-.badge-success { background-color: #d1fae5; color: #065f46; } /* Green */
-.badge-warning { background-color: #fef3c7; color: #92400e; } /* Yellow */
-.badge-danger  { background-color: #fee2e2; color: #b91c1c; } /* Red */
-.badge-blue    { background-color: #dbeafe; color: #1e40af; } /* Blue */
-
-/* --- Status Dropdown --- */
 .status-select {
   padding: 6px 10px;
   border-radius: 4px;
@@ -88,45 +82,43 @@
 }
 
 .badge-badge-success {
-  background-color: #d1fae5; /* Light Green Background */
-  color: #065f46;            /* Dark Green Text */
+  background-color: #d1fae5;
+  color: #065f46;
   border: 1px solid #34d399;
   display: inline-block;
   padding: 5px 12px;
-  border-radius: 999px; /* Makes it pill-shaped */
-  font-size: 0.75rem;   /* 12px */
-  font-weight: 600;     /* Semi-bold */
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
   display: inline-block;
   letter-spacing: 0.025em;
-  text-transform: uppercase; /* Green Border */
+  text-transform: uppercase;
 }
 
-/* Warning (Yellow) - For Pending */
 .badge-badge-warning {
-  background-color: #fef3c7; /* Light Yellow Background */
-  color: #92400e;            /* Dark Orange Text */
+  background-color: #fef3c7;
+  color: #92400e;
   border: 1px solid #fbbf24;
   display: inline-block;
   padding: 5px 12px;
-  border-radius: 999px; /* Makes it pill-shaped */
-  font-size: 0.75rem;   /* 12px */
-  font-weight: 600;     /* Semi-bold */
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
   display: inline-block;
   letter-spacing: 0.025em;
-  text-transform: uppercase; /* Yellow Border */
+  text-transform: uppercase;
 }
 
-/* Danger (Red) - For Failed or Cancelled */
 .badge-badge-danger {
-  background-color: #fee2e2; /* Light Red Background */
-  color: #991b1b;            /* Dark Red Text */
+  background-color: #fee2e2;
+  color: #991b1b;
   border: 1px solid #f87171;
   display: inline-block;
   padding: 5px 12px;
-  border-radius: 999px; /* Makes it pill-shaped */
-  font-size: 0.75rem;   /* 12px */
-  font-weight: 600;     /* Semi-bold */
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
   display: inline-block;
   letter-spacing: 0.025em;
-  text-transform: uppercase; /* Red Border */
+  text-transform: uppercase;
 }

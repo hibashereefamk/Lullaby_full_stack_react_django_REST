@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import './AdminProductDetail.css'; // We will create this CSS file below
+import './AdminProductDetail.css';
 
 const AdminProductDetail = () => {
-  const { id } = useParams(); // Get the ID from the URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  // Modal State for Editing
   const [showEditModal, setShowEditModal] = useState(false);
   const [editFormData, setEditFormData] = useState({
     name: '',
@@ -24,13 +23,11 @@ const AdminProductDetail = () => {
     image: null
   });
 
-  // --- Auth Helper ---
   const getAuthHeaders = () => {
     const token = localStorage.getItem("access_token");
     return { 'Authorization': `Bearer ${token}` };
   };
 
-  // --- 1. Fetch Product Details ---
   useEffect(() => {
     fetchProductDetail();
   }, [id]);
@@ -49,14 +46,11 @@ const AdminProductDetail = () => {
       setLoading(false);
     }
   };
-
-  // --- 2. Deactivate / Activate Logic ---
   const handleToggleStatus = async () => {
     const action = product.is_active ? "Deactivate" : "Activate";
     if (!window.confirm(`Are you sure you want to ${action} this product?`)) return;
 
     try {
-      // Send PATCH request to update only the is_active field
       const response = await axios.patch(
         `http://127.0.0.1:8000/api/admin/products/${id}/`, 
         { is_active: !product.is_active }, 
@@ -70,7 +64,6 @@ const AdminProductDetail = () => {
     }
   };
 
-  // --- 3. Delete Logic ---
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to PERMANENTLY delete this product?")) return;
 
@@ -79,14 +72,12 @@ const AdminProductDetail = () => {
         headers: getAuthHeaders()
       });
       alert("Product deleted.");
-      navigate('/admin/products'); // Redirect back to list
+      navigate('/admin/products');
     } catch (err) {
       console.error("Delete error:", err);
       alert("Failed to delete product.");
     }
   };
-
-  // --- 4. Edit Modal Logic ---
   const openEditModal = () => {
     setEditFormData({
       name: product.name,
@@ -97,7 +88,7 @@ const AdminProductDetail = () => {
       section: product.section,
       is_active: product.is_active,
       variants: product.variants || [],
-      image: null // We don't prepopulate file input
+      image: null 
     });
     setShowEditModal(true);
   };
@@ -127,7 +118,6 @@ const AdminProductDetail = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    // Append simple fields
     Object.keys(editFormData).forEach(key => {
       if (key === 'variants') data.append('variants', JSON.stringify(editFormData.variants));
       else if (key === 'image' && editFormData.image) data.append('image', editFormData.image);
@@ -138,7 +128,7 @@ const AdminProductDetail = () => {
       const response = await axios.patch(`http://127.0.0.1:8000/api/admin/products/${id}/`, data, {
         headers: getAuthHeaders()
       });
-      setProduct(response.data); // Update UI with new data
+      setProduct(response.data); 
       setShowEditModal(false);
       alert("Product updated!");
     } catch (err) {
@@ -152,7 +142,6 @@ const AdminProductDetail = () => {
 
   return (
     <div className="detail-container">
-      {/* Header / Nav */}
       <button className="btn-back" onClick={() => navigate(-1)}>&larr; Back to List</button>
       
       <div className="detail-header">
@@ -163,7 +152,6 @@ const AdminProductDetail = () => {
       </div>
 
       <div className="detail-content">
-        {/* Left Column: Image */}
         <div className="detail-image-section">
           {product.image ? (
             <img 
@@ -175,8 +163,6 @@ const AdminProductDetail = () => {
             <div className="no-image-placeholder">No Image Available</div>
           )}
         </div>
-
-        {/* Right Column: Info */}
         <div className="detail-info-section">
           <div className="info-group">
             <label>Price:</label>
@@ -224,7 +210,6 @@ const AdminProductDetail = () => {
             </table>
           </div>
 
-          {/* Action Buttons */}
           <div className="action-buttons-row">
             <button className="btn-edit-large" onClick={openEditModal}>
                Edit Details

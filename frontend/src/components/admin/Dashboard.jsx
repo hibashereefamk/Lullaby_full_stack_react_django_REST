@@ -199,7 +199,6 @@ const Dashboard = () => {
                     <span className="status-name">{item.status}</span>
                     <span className="status-qty">{item.count} orders</span>
                   </div>
-                  {/* Simple CSS-based progress bar visualization */}
                   <div className="progress-bg">
                     <div 
                       className="progress-fill" 
@@ -222,7 +221,6 @@ const Dashboard = () => {
   );
 };
 
-// Helper function for progress bar colors
 const getColorForStatus = (status) => {
   switch(status?.toLowerCase()) {
     case 'pending': return '#f59e0b';

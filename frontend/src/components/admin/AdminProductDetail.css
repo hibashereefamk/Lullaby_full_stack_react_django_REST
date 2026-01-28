@@ -153,5 +153,5 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  margin-left: auto; /* Push delete to the right */
+  margin-left: auto; 
 }

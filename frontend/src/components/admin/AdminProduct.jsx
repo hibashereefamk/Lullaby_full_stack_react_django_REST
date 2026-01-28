@@ -358,19 +358,15 @@ const AdminProduct = () => {
               <div className="form-group">
                 <label>Stock & Sizes</label>
                 <div style={{ background: '#f9f9f9', padding: '10px', borderRadius: '5px' }}>
-                  
-                  {/* Headers */}
+                 
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '5px', fontWeight: 'bold' }}>
                     <div style={{ flex: 1 }}>Size</div>
                     <div style={{ flex: 1 }}>Stock Quantity</div>
                     <div style={{ width: '30px' }}></div>
                   </div>
-
-                  {/* List of Variants */}
                   {formData.variants.map((variant, index) => (
                     <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
                       
-                      {/* Size Input (or Select) */}
                       <select 
                         className="form-input" 
                         style={{ flex: 1 }}
@@ -385,8 +381,6 @@ const AdminProduct = () => {
                         <option value="3-4Y">3–4 Years'</option>
                         <option value="4-5Y">4–5 Years'</option>
                       </select>
-
-                      {/* Stock Input */}
                       <input 
                         type="number" 
                         className="form-input" 
@@ -397,8 +391,6 @@ const AdminProduct = () => {
                         min="0"
                         required
                       />
-
-                      {/* Delete Button */}
                       <button 
                         type="button" 
                         onClick={() => removeVariant(index)}
@@ -408,8 +400,6 @@ const AdminProduct = () => {
                       </button>
                     </div>
                   ))}
-
-                  {/* Add Button */}
                   <button 
                     type="button" 
                     onClick={addVariant} 
