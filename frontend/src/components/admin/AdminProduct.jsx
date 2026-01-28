@@ -6,30 +6,40 @@ import './AdminProducts.css';
 const AdminProduct = () => {
   const navigate = useNavigate();
   
-  // Data State
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [nextPage, setNextPage] = useState(null);
   const [prevPage, setPrevPage] = useState(null);
+  const [filter,   setFilter]=   useState({
+        search: '',
+        category: '',
+        ordering: '', 
+        section: ''
+    })  
   const [currentPageUrl, setCurrentPageUrl] = useState('http://127.0.0.1:8000/api/admin/products/');
-
-  // Modal & Form State
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
   const [formData, setFormData] = useState({
     name:'',
     description: '',
     price: '',
     discount_price: '',
-    category_id: '', // Note: Backend expects category_id, not name
-    section: '', // Default example
+    category_id: '', 
+    section: '', 
     image: null,
     is_active: true,
     variants:[{size:'',stock:0}]
   });
-
-  // --- Auth Helper ---
+  const handleFilterChange = (e) => {
+    setFilter({
+      ...filter,
+      [e.target.name]: e.target.value
+    });
+  };
+  const resetFilters = () => {
+    setFilter({ search: '', category: '', ordering: '', section: '' });
+  };
+  
   const getAuthHeaders = () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
@@ -38,7 +48,7 @@ const AdminProduct = () => {
     }
     return {
       'Authorization': `Bearer ${token}`,
-      // Do NOT set Content-Type here for FormData, axios sets it automatically
+      
     };
   };
 
@@ -60,17 +70,30 @@ const AdminProduct = () => {
     setFormData({ ...formData, variants: newVariants });
   };
   useEffect(() => {
-    fetchProducts(currentPageUrl);
-  }, [currentPageUrl]);
+    const timer = setTimeout(() => {
+      const baseUrl = 'http://127.0.0.1:8000/api/admin/products/';
+      setCurrentPageUrl(baseUrl);
+      fetchProducts(baseUrl);
+    }, 500);
 
-  const fetchProducts = async (url) => {
+    return () => clearTimeout(timer);
+  }, [filter]); 
+  
+
+ const fetchProducts = async (url) => {
     setLoading(true);
     try {
-      const response = await axios.get(url, { headers: { 
-          'Authorization': `Bearer ${localStorage.getItem("access_token")}` 
-      }});
+      const isBaseUrl = url === 'http://127.0.0.1:8000/api/admin/products/';
       
-      // Handle Django PageNumberPagination response structure
+      const config = {
+        headers: { 
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}` 
+        },
+        params: isBaseUrl ? filter : {}
+      };
+
+      const response = await axios.get(url, config);
+      
       setProducts(response.data.results);
       setNextPage(response.data.next);
       setPrevPage(response.data.previous);
@@ -82,7 +105,6 @@ const AdminProduct = () => {
     }
   };
 
-  // --- Form Handlers ---
   const handleInputChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     if (type === 'file') {
@@ -100,29 +122,8 @@ const AdminProduct = () => {
     setShowModal(true);
   };
 
-  const openEditModal = (product) => {
-    setFormData({
-      name:product.name,
-      description: product.description,
-      price: product.price,
-      discount_price: product.discount_price,
-      category_id: product.category_id || '', // Ensure we have the ID to send back
-      section: product.section,
-      image: null,
-      variants: product.variants && product.variants.length > 0 
-              ? product.variants 
-              : [{ size: '', stock: 0 }],
-      is_active: product.is_active
-    });
-    setEditId(product.id);
-    setIsEditing(true);
-    setShowModal(true);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Create FormData for file upload support
     const data = new FormData();
     data.append('name', formData.name)
     data.append('description', formData.description);
@@ -137,21 +138,13 @@ const AdminProduct = () => {
     }
 
     try {
-      if (isEditing) {
-        // PUT Request
-        await axios.put(`http://127.0.0.1:8000/api/admin/products/${editId}/`, data, {
-          headers: getAuthHeaders()
-        });
-        alert("Product updated successfully!");
-      } else {
-        // POST Request
         await axios.post('http://127.0.0.1:8000/api/admin/products/', data, {
           headers: getAuthHeaders()
         });
         alert("Product created successfully!");
-      }
+      
       setShowModal(false);
-      fetchProducts(currentPageUrl); // Refresh list
+      fetchProducts(currentPageUrl);
     } catch (err) {
       console.error("Save error:", err);
       alert("Failed to save product. Check inputs (Ensure Category ID exists).");
@@ -185,7 +178,58 @@ const AdminProduct = () => {
         <h1 className="page-title">Product Management</h1>
         <button className="btn-primary" onClick={openAddModal}>+ Add New Product</button>
       </div>
+      <div className="filter-container" >
+        
+        <input 
+            type="text" 
+            name="search" 
+            placeholder="Search by Name..." 
+            value={filter.search} 
+            onChange={handleFilterChange}
+            className="form-input"
+            style={{ flex: 2, minWidth: '200px', margin: 0 }}
+        />
+        <input 
+            type="number" 
+            name="category" 
+            placeholder="Cat ID" 
+            value={filter.category} 
+            onChange={handleFilterChange}
+            className="form-input"
+            style={{ flex: 1, minWidth: '80px', margin: 0 }}
+        />
 
+        <select 
+            name="section" 
+            value={filter.section} 
+            onChange={handleFilterChange} 
+            className="form-input" 
+            style={{ flex: 1, minWidth: '100px', margin: 0 }}
+        >
+            <option value="">All Sections</option>
+            <option value="BOY">Boy</option>
+            <option value="GIRL">Girl</option>
+            <option value="BABY">Baby</option>
+        </select>
+        <select 
+            name="ordering" 
+            value={filter.ordering} 
+            onChange={handleFilterChange} 
+            className="form-input" 
+            style={{ flex: 1, minWidth: '120px', margin: 0 }}
+        >
+            <option value="">Sort By...</option>
+            <option value="price">Price: Low to High</option>
+            <option value="-price">Price: High to Low</option>
+            <option value="-created_at">Newest First</option>
+            <option value="stock">Stock: Low to High</option>
+        </select>
+        <button className='rest-button'
+            onClick={resetFilters} 
+        >
+            Reset
+        </button>
+      </div>
       {loading ? (
         <p>Loading products...</p>
       ) : (
@@ -237,25 +281,23 @@ const AdminProduct = () => {
         </div>
       )}
 
-      {/* Pagination Controls */}
       <div className="pagination">
         <button 
           className="btn-page" 
           disabled={!prevPage} 
-          onClick={() => setCurrentPageUrl(prevPage)}
+          onClick={() => {setCurrentPageUrl(prevPage);
+            fetchProducts(prevPage);}}
         >
           &larr; Previous
         </button>
         <button 
           className="btn-page" 
           disabled={!nextPage} 
-          onClick={() => setCurrentPageUrl(nextPage)}
+          onClick={() => {setCurrentPageUrl(nextPage);fetchProducts(nextPage);}}
         >
           Next &rarr;
         </button>
       </div>
-
-      {/* Add/Edit Modal */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">

@@ -1,57 +1,57 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, ShoppingCart, LogIn, User, Home, Info, Package, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingCart, LogIn, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Navbar.css"; 
+import { useShop } from "../context/WishlistContext";
 
 function Navbar() {
-  // const { cart } = useContext(updateContext);
-  // const { favorite } = useContext(UpdatefavContext);
   const navigate = useNavigate();
-
+  const { wishlistCount,cartCount } = useShop();
+  
   const [username, setUsername] = useState("");
-  const isLoggedIn = !!localStorage.getItem("access_token");
+  
+  // Get token from storage
+  const token = localStorage.getItem("access_token");
 
+  // COMBINED USE EFFECT: Handles both User Profile AND Counts
   useEffect(() => {
-    if (isLoggedIn) {
-      const fetchUser = async () => {
+    // 1. If user is logged in (Token exists)
+    if (token) {
+      const fetchData = async () => {
         try {
-          const token = localStorage.getItem("access_token");
-          const res = await axios.get("http://127.0.0.1:8000/api/profile/", {
+          // A. Fetch Profile Name
+          const profileRes = await axios.get("http://127.0.0.1:8000/api/profile/", {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setUsername(res.data.name); 
+          setUsername(profileRes.data.name); 
+
         } catch (err) {
-          console.error("Failed to fetch user", err);
+          console.error("Failed to fetch user data", err);
         }
       };
-      fetchUser();
+      fetchData();
+      
+    } 
+    // 2. If user is NOT logged in (New Account / Guest)
+    else {
+      
+      setUsername("");
     }
-  }, [isLoggedIn]);
+  }, [token]); // Re-run if token changes
 
   return (
     <div className="navbar">
       
       {/* LEFT SECTION: LOGO + MENU LINKS */}
       <div className="nav-left">
-        {/* Logo Image */}
-        <Link to="/" className="logo-soft">
-          LULLABY
-        </Link>
+        <Link to="/" className="logo-soft">LULLABY</Link>
 
-        {/* Navigation Links */}
-        <Link to="/" className="nav-link">
-           HOME
-        </Link>
-        <Link to="/products" className="nav-link">
-           PRODUCTS
-        </Link>
-        <Link to="/order" className="nav-link">
-           MY ORDER
-        </Link>
-        <Link to="/about" className="nav-link">
-           ABOUT
-        </Link>
+        {/* These links are visible to EVERYONE (New & Old Users) */}
+        <Link to="/" className="nav-link">HOME</Link>
+        <Link to="/products" className="nav-link">PRODUCTS</Link>
+        <Link to="/order" className="nav-link">MY ORDER</Link>
+        <Link to="/about" className="nav-link">ABOUT</Link>
       </div>
 
       {/* RIGHT SECTION: ICONS + LOGIN BUTTON */}
@@ -59,32 +59,32 @@ function Navbar() {
         
         {/* Wishlist Icon */}
         <Link to="/wishlists" className="nav-link">
-          <div className="icon-wrapper">
+          <div className="icon-display">
+            {/* Logic: Fill icon black if count > 0, otherwise empty */}
             <Heart size={24} stroke="black" fill="black" />
-            {/* {favorite > 0 && <span className="badge">{favorite}</span>} */}
+            {wishlistCount > 0 && <span className="badge-count">{wishlistCount}</span>}
           </div>
         </Link>
 
         {/* Cart Icon */}
         <Link to="/cart" className="nav-link">
-          <div className="icon-wrapper">
+          <div className="icon-display">
             <ShoppingCart size={24} stroke="black" fill="black" />
-            {/* {cart > 0 && <span className="badge">{cart}</span>} */}
+            {cartCount > 0 && <span className="badge-count">{cartCount}</span>}
           </div>
         </Link>
 
-        {/* Auth Check */}
-        {isLoggedIn ? (
+        {/* AUTH CHECK: Shows 'Login' for new users, 'Profile' for logged in users */}
+        {token ? (
           <Link to="/profile" className="nav-link" title="My Profile">
             <div className="profile-wrapper">
               <User size={24} stroke="black" fill="black" />
-              {/* Display username if you want, or just "Profile" */}
-              <span className="profile-text">Profile</span>
+              <span className="profile-text">{username || "Profile"}</span>
             </div>
           </Link>
         ) : (
-          <div className="login-btn" onClick={() => navigate("/login")}>
-            <span className="nav-link" style={{ gap: '5px' }}>
+          <div className="login-btn" onClick={() => navigate("/login")} style={{cursor: 'pointer'}}>
+            <span className="nav-link" style={{ gap: '5px', display: 'flex', alignItems: 'center' }}>
               <LogIn size={18} /> LOGIN
             </span>
           </div>

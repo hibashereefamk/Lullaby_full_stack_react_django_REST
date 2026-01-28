@@ -106,9 +106,11 @@ class CartSerializer(serializers.ModelSerializer):
     def get_total_price(self, obj):
         total = 0
         for item in obj.items.all():
-            product = item.variant.product
-            price = product.discount_price if product.discount_price else product.price
-            total += price * item.quantity
+            product = item.product 
+            if product:
+                price = product.discount_price if product.discount_price else product.price
+                total += price * item.quantity
+                
         return total
     
 

@@ -63,13 +63,11 @@ a.logo-soft {
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 12px;
 }
 
-.icon-wrapper {
+.icon-display {
   position: relative;
-  display: flex;
-  align-items: center;
 }
 
 .profile-wrapper {
@@ -84,7 +82,7 @@ a.logo-soft {
 }
 
 /* Badge (Notification Count) */
-.badge {
+.badge-count {
   position: absolute;
   top: -8px;
   right: -10px;

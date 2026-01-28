@@ -11,6 +11,7 @@ function ProductDetail() {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [whilist,setwishlist]=useState(false)
   
   // New state for selected size
   const [selectedSize, setSelectedSize] = useState(null);
@@ -70,7 +71,7 @@ function ProductDetail() {
     }
   };
 
-  // 3. Add to Wishlist Handler
+  
   const addToWishlist = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
@@ -85,8 +86,10 @@ function ProductDetail() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Added to Wishlist!");
+      setwishlist(true)
     } catch (err) {
       console.error("Add to wishlist failed", err);
+      alert("Failed to add: " + (err.response?.data?.detail || "Unknown Error"));
     }
   };
 
@@ -160,7 +163,7 @@ function ProductDetail() {
               </button>
               
               <button className="btn-wishlist" onClick={addToWishlist}>
-                <Heart size={20} /> Wishlist
+                <Heart size={20} fill={whilist?'red':'none'} /> Wishlist
               </button>
             </div>
 

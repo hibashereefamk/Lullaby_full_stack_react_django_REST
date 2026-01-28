@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
 import json
+from Users.models import CustomUser
 class PromotionViewSet(viewsets.ModelViewSet):
     queryset = Promotion.objects.filter(is_active=True) 
     serializer_class = PromotionSerializer
@@ -139,13 +140,18 @@ class CartItemViewSet(viewsets.ModelViewSet):
 
         return super().partial_update(request, *args, **kwargs)
     
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q
-from .models import Product
-from .serializers import ProductsAdminSerializer
+class Countwhilistandcartview(APIView):
+    
+    def get(self,request):
+        user=request.user
+        
+        wishlist_count=Wishlist.objects.filter(user=user).count()
+        cartitem_count=CartItem.objects.filter(cart__user=user).count()
+        return Response ({
+            "wishlist_count" :wishlist_count,
+            "cartitem_count" :cartitem_count
+        })
+    
 
 class ProductAdminListAPIView(APIView):
     permission_classes = [IsAdminUser]

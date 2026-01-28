@@ -7,7 +7,7 @@ import './Product.css';
 import Rating from "./Rating";
 
 
-import { useWishlist } from "../context/WishlistContext"; 
+import { useShop } from "../context/WishlistContext"; 
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -18,7 +18,7 @@ function Products() {
   const [selectedSection, setSelectedSection] = useState(""); 
   const [sortOrder, setSortOrder] = useState("");
   
-  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { toggleWishlist, isInWishlist,fetchCart } = useShop();
 
   const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -129,6 +129,8 @@ function Products() {
            { headers: { Authorization: `Bearer ${token}` } }
         );
         alert("Added to cart!");
+        fetchCart();
+        
      } catch(err) { console.error(err); }
   };
 
