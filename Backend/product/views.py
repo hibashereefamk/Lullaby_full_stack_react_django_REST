@@ -24,7 +24,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.filter(is_active=True)
+    queryset = Product.objects.filter(is_active=True).order_by('-created_at')
     serializer_class = ProductSerializer
 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]

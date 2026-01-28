@@ -5,18 +5,19 @@ import { ShoppingCart, Heart, ArrowLeft, Check } from "lucide-react";
 import Navbar from "./Navbar";
 import "./Produtdetails.css";
 import Rating from "./Rating";
+import { useShop } from "../context/WishlistContext";
 
 function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [whilist,setwishlist]=useState(false)
+ 
   
   // New state for selected size
   const [selectedSize, setSelectedSize] = useState(null);
 
-  // 1. Fetch Product Data
+const { toggleWishlist, isInWishlist,fetchCart } = useShop();
   useEffect(() => {
     // Note: Ensure this matches your URL from urls.py (e.g., /api/productdetails/ or /api/products/)
     axios.get(`http://127.0.0.1:8000/api/productdetails/${id}/`) 
@@ -30,7 +31,7 @@ function ProductDetail() {
       });
   }, [id]);
 
-  // 2. Add to Cart Handler
+  
   const addToCart = async () => {
 
     const token = localStorage.getItem("access_token");
@@ -62,8 +63,10 @@ function ProductDetail() {
       );
       if (response.status === 200) {
             alert(response.data.message || "Product quantity increased!");
+            fetchCart()
         } else if (response.status === 201) {
             alert(`${product.name} added to cart!`);
+            fetchCart()
         }
     } catch (err) {
       console.error("Add to cart failed", err);
@@ -71,35 +74,20 @@ function ProductDetail() {
     }
   };
 
-  
-  const addToWishlist = async () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-        alert("Please login first.");
-        return;
+ 
+ const handleFavClick = () => {
+    if (product){
+      toggleWishlist(product); 
     }
-
-    try {
-      await axios.post(
-        "http://127.0.0.1:8000/api/wishlist/", 
-        { product_id: product.id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Added to Wishlist!");
-      setwishlist(true)
-    } catch (err) {
-      console.error("Add to wishlist failed", err);
-      alert("Failed to add: " + (err.response?.data?.detail || "Unknown Error"));
-    }
+    
   };
-
-  if (loading) return <div className="loading-container"><div className="spinner"></div></div>;
+ 
+  if (loading) return <div className="loading-container">loading .....</div>;
   if (!product) return <div className="error-msg">Product not found</div>;
-
-  // Price Calculation Logic
+ 
   const displayPrice = product.discount_price ? product.discount_price : product.price;
   const hasDiscount = product.discount_price !== null && product.discount_price > 0;
-
+ const isLiked = isInWishlist(product.id);
   return (
     <div className="page-wrapper">
       <Navbar />
@@ -162,8 +150,10 @@ function ProductDetail() {
                 <ShoppingCart size={20} /> Add to Cart
               </button>
               
-              <button className="btn-wishlist" onClick={addToWishlist}>
-                <Heart size={20} fill={whilist?'red':'none'} /> Wishlist
+              <button className="btn-wishlist" onClick={()=>handleFavClick()}>
+                <Heart size={20} color={isLiked? "red" : "gray"} 
+                                        
+                                        fill={isLiked ? "red" : "none"}  /> Wishlist
               </button>
             </div>
 

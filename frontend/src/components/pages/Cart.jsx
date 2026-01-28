@@ -4,9 +4,11 @@ import { Trash2, Plus, Minus, AlertCircle } from "lucide-react";
 import Navbar from "./Navbar";
 import "./Cart.css";
 import { useNavigate } from "react-router-dom";
+import { useShop } from "../context/WishlistContext";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
+  const {fetchCart } = useShop();
   const [total, setTotal] = useState(0);
   const token = localStorage.getItem("access_token");
   const navigate = useNavigate()
@@ -26,7 +28,7 @@ function Cart() {
     setTotal(newTotal);
   }, [cartItems]);
 
-  const fetchCart = () => {
+  const updateCart = () => {
    
     axios.get("http://127.0.0.1:8000/api/cartitems/", config)
       .then(res => setCartItems(res.data))
@@ -34,7 +36,8 @@ function Cart() {
   ;}
 useEffect(() => {
     if (token) {
-      fetchCart();
+      
+      updateCart();
     } else {
       alert("Please login to view your cart");
       navigate("/login");
@@ -49,7 +52,7 @@ useEffect(() => {
         config
       );
       
-      fetchCart(); 
+      updateCart(); 
     } catch (err) {
       console.error("Error updating size", err);
       alert("Could not update size. It might be out of stock.");
@@ -63,7 +66,7 @@ useEffect(() => {
       setCartItems(prev => prev.map(item =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       ));
-      fetchCart();
+      updateCart();
     } catch (err) {
       console.error("Error updating quantity", err);
     }
@@ -73,6 +76,7 @@ useEffect(() => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/cartitems/${id}/`, config);
       setCartItems(prev => prev.filter(item => item.id !== id));
+      fetchCart();
     } catch (err) {
       console.error("Error removing item", err);
     }

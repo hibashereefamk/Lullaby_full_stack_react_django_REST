@@ -11,16 +11,12 @@ function Navbar() {
   
   const [username, setUsername] = useState("");
   
-  // Get token from storage
   const token = localStorage.getItem("access_token");
 
-  // COMBINED USE EFFECT: Handles both User Profile AND Counts
   useEffect(() => {
-    // 1. If user is logged in (Token exists)
     if (token) {
       const fetchData = async () => {
         try {
-          // A. Fetch Profile Name
           const profileRes = await axios.get("http://127.0.0.1:8000/api/profile/", {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -33,34 +29,26 @@ function Navbar() {
       fetchData();
       
     } 
-    // 2. If user is NOT logged in (New Account / Guest)
     else {
       
       setUsername("");
     }
-  }, [token]); // Re-run if token changes
-
+  }, [token]); 
   return (
     <div className="navbar">
       
-      {/* LEFT SECTION: LOGO + MENU LINKS */}
       <div className="nav-left">
         <Link to="/" className="logo-soft">LULLABY</Link>
 
-        {/* These links are visible to EVERYONE (New & Old Users) */}
         <Link to="/" className="nav-link">HOME</Link>
         <Link to="/products" className="nav-link">PRODUCTS</Link>
         <Link to="/order" className="nav-link">MY ORDER</Link>
         <Link to="/about" className="nav-link">ABOUT</Link>
       </div>
-
-      {/* RIGHT SECTION: ICONS + LOGIN BUTTON */}
       <div className="nav-right">
         
-        {/* Wishlist Icon */}
         <Link to="/wishlists" className="nav-link">
           <div className="icon-display">
-            {/* Logic: Fill icon black if count > 0, otherwise empty */}
             <Heart size={24} stroke="black" fill="black" />
             {wishlistCount > 0 && <span className="badge-count">{wishlistCount}</span>}
           </div>

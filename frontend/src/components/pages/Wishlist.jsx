@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart, AlertCircle } from "lucide-react"; // Added AlertCircle
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom"; 
 import "./Wishlist.css";
 import Rating from "./Rating";
+import { useShop } from "../context/WishlistContext";
 
 function Wishlist() {
   const [wishlistItems, setWishlistItems] = useState([]);
   const navigate = useNavigate();
 
-  // 1. Get Token
+  const { fetchCart, fetchWishlist: refreshGlobalWishlist } = useShop();
+  
   const token = localStorage.getItem("access_token"); 
 
-const handleViewProduct = (id) => navigate(`/products/${id}`);
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -21,32 +22,34 @@ const handleViewProduct = (id) => navigate(`/products/${id}`);
     },
   };
 
+  const handleViewProduct = (id) => navigate(`/products/${id}`);
+
+  const fetchLocalWishlist = () => {
+    axios.get("http://127.0.0.1:8000/api/wishlist/", config)
+      .then(res => {
+        const items = res.data.results ? res.data.results : res.data;
+        setWishlistItems(items); 
+      })
+      .catch(err => console.error("Error fetching wishlist:", err));
+  };
+
   useEffect(() => {
     if (token) {
-      fetchWishlist();
+      fetchLocalWishlist();
     } else {
       alert("Please login to view your wishlist.");
       navigate("/login");
     }
   }, [token]);
 
-  const fetchWishlist = () => {
-    axios.get("http://127.0.0.1:8000/api/wishlist/", config)
-      .then(res => {
-        console.log("Wishlist Data:", res.data);
-        
-        // 1. Extract the array correctly
-        const items = res.data.results ? res.data.results : res.data;
-        
-        
-        setWishlistItems(items); 
-      })
-      .catch(err => console.error("Error fetching wishlist:", err));
-  };
   const removeFromWishlist = async (id) => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/wishlist/${id}/`, config);
+      
       setWishlistItems(prev => prev.filter(item => item.id !== id));
+      
+      refreshGlobalWishlist(); 
+
     } catch (err) {
       console.error("Error removing item", err);
     }
@@ -56,14 +59,14 @@ const handleViewProduct = (id) => navigate(`/products/${id}`);
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/cartitems/", 
-        { product_id: productId, quantity: 1 }, 
+        { product: productId, quantity: 1 }, // Changed 'product_id' to 'product' to match standard Django DRF
         config
       );
-      if (response.status === 200) {
-            alert(response.data.message || "Product quantity increased!");
-        } else if (response.status === 201) {
-            alert(`item added to cart!`);
-        }
+      
+      if (response.status === 200 || response.status === 201) {
+            alert("Added to cart!");
+            fetchCart(); // Updates Navbar Cart Count
+      }
     } catch (err) {
       console.error("Add to cart failed", err);
       alert("Failed to add to cart.");
@@ -78,18 +81,22 @@ const handleViewProduct = (id) => navigate(`/products/${id}`);
         
         {wishlistItems.length === 0 ? (
             <div className="empty-wishlist">
+                <AlertCircle size={48} color="#ccc" />
                 <p className="empty-msg">Your wishlist is empty.</p>
+                <button className="browse-btn" onClick={() => navigate("/")}>Browse Products</button>
             </div>
         ) : (
             <div className="product-grid">
             {wishlistItems.map(item => {
-  const hasDiscount =item.product.discount_price !== null && item.product.discount_price > 0;
-  const displayPrice = hasDiscount? item.product.discount_price: item.product.price; 
-  return(
+              // Safety check to ensure item.product exists
+              if (!item.product) return null;
+
+              const hasDiscount = item.product.discount_price !== null && item.product.discount_price > 0;
+              const displayPrice = hasDiscount ? item.product.discount_price : item.product.price; 
+              
+              return (
                 <div key={item.id} className="product-card wishlist-card">
-                    {/* Image Area */}
                     <div className="image-wrapper" onClick={() => handleViewProduct(item.product.id)}>
-                        {/* FIX: Use item.product.image */}
                         <img 
                             className="product-image" 
                             src={item.product.image} 
@@ -97,18 +104,17 @@ const handleViewProduct = (id) => navigate(`/products/${id}`);
                         />
                     </div>
 
-                    
                     <div className="product-details">
-                      
                         <h3>{item.product.name}</h3>
-                        <p className="prdt-price">₹{displayPrice}</p>
-
-          {hasDiscount && (
-            <span className="discount-price">
-              ₹{item.product.price}
-            </span>
-          )}
-                        <Rating value={item.product.rating} text={`(${item.product.rating}k reviews)`} />
+                        
+                        <div className="price-row">
+                             <span className="prdt-price">₹{displayPrice}</span>
+                             {hasDiscount && (
+                                <span className="discount-price">₹{item.product.price}</span>
+                             )}
+                        </div>
+                        
+                        <Rating value={item.product.rating} text={`(${item.product.rating}k)`} />
                         
                         <div className="card-actions">
                             <button 
@@ -122,7 +128,6 @@ const handleViewProduct = (id) => navigate(`/products/${id}`);
                             <button 
                                 className="icon-btn cart" 
                                 title="Add to Cart"
-                                // FIX: Use item.product.id
                                 onClick={() => addToCart(item.product.id)} 
                             >
                                 <ShoppingCart size={18} />
@@ -130,7 +135,7 @@ const handleViewProduct = (id) => navigate(`/products/${id}`);
                         </div>
                     </div>
                 </div>
-            )})}
+              )})}
             </div>
         )}
       </div>
