@@ -59,13 +59,13 @@ function Wishlist() {
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/cartitems/", 
-        { product: productId, quantity: 1 }, // Changed 'product_id' to 'product' to match standard Django DRF
+        { product_id: productId, quantity: 1 }, // Changed 'product_id' to 'product' to match standard Django DRF
         config
       );
       
       if (response.status === 200 || response.status === 201) {
             alert("Added to cart!");
-            fetchCart(); // Updates Navbar Cart Count
+            fetchCart();
       }
     } catch (err) {
       console.error("Add to cart failed", err);

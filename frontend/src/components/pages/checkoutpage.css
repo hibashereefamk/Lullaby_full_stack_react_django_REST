@@ -50,10 +50,15 @@
     flex-direction: column;
     gap: 1rem;
 }
-
+.display-address{
+   display: flex;
+    align-items: center;
+    gap: 10px; 
+}
 .address-card {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 15px;
     padding: 1rem;
     border: 2px solid #eee;
@@ -67,8 +72,8 @@
 }
 
 .address-card.selected {
-    border-color: #ff6b6b;
-    background-color: #fff5f5;
+    border-color: #ebf5fc;
+    background-color: #ecf3f5;
 }
 
 .address-radio {
@@ -82,13 +87,13 @@
 }
 
 .address-card.selected .address-radio {
-    border-color: #ff6b6b;
+    border-color: #c1dff3;
 }
 
 .radio-dot {
     width: 10px;
     height: 10px;
-    background-color: #ff6b6b;
+    background-color: #7fdffc;
     border-radius: 50%;
 }
 
@@ -116,8 +121,8 @@
 }
 
 .add-address-btn:hover {
-    border-color: #ff6b6b;
-    color: #ff6b6b;
+    border-color: #b1d4e2;
+    color:black;
 }
 
 .new-address-form {
@@ -148,7 +153,7 @@
 }
 
 .save-btn {
-    background-color: #ff6b6b;
+    background-color: #bcdcf7;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -183,7 +188,7 @@
 }
 
 .payment-option.active {
-    border-color: #ff6b6b;
+    border-color: #b6d5f1;
     background-color: #fff5f5;
     font-weight: 600;
 }
