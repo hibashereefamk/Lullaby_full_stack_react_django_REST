@@ -5,16 +5,16 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { MapPin, CreditCard, Plus, CheckCircle,Trash2 } from 'lucide-react'
 import './checkoutpage.css'
 import PaymentButton from './PaymentComponent'
+import { useShop } from "../context/WishlistContext";
 
 function Checkout () {
   const navigate = useNavigate()
   const location = useLocation()
-
+  const {fetchCart} = useShop()
   const [cart, setCart] = useState(null)
   const [addresses, setAddresses] = useState([])
   const [selectedAddressId, setSelectedAddressId] = useState(null)
   const [paymentMethod, setPaymentMethod] = useState('')
-  const [paymentstatus, setpaymentstatus] = useState('')
   const [loading, setLoading] = useState(true)
 
   // Address Form State
@@ -175,7 +175,11 @@ function Checkout () {
 
       if (res.status === 201 || res.status === 200) {
         alert('Order Placed Successfully! Order ID: ' + res.data.order_number)
-        navigate('/order-success')
+        setTimeout(async () => {
+            await fetchCart(); 
+            navigate('/order-success');
+        }, 500);
+      
       }
     } catch (err) {
       console.error('Order Error:', err.response?.data)

@@ -1,10 +1,10 @@
 import { CheckCircle } from "lucide-react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-
+import { useShop } from "../context/WishlistContext";
 const PaymentButton = ({ cartTotal, addressId }) => {
     const navigate = useNavigate();
-
+    const{fetchCart}=useShop()
     const loadRazorpayScript = () => {
         return new Promise((resolve) => {
             const script = document.createElement("script");
@@ -81,8 +81,10 @@ const PaymentButton = ({ cartTotal, addressId }) => {
                         );
 
                         if (orderRes.status === 201 || orderRes.status === 200) {
-                            // alert("Order Placed Successfully!");
-                            navigate("/order-success");
+                            setTimeout(async () => {
+            await fetchCart(); 
+            navigate('/order-success');
+        }, 100);
                         }
                     } catch (err) {
                         console.error("Order Creation Failed:", err);
