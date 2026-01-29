@@ -125,7 +125,7 @@ class ProductsAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'created_at', 'is_active', 'price', 'discount_price', 
+        fields = ['id', 'created_at', 'is_active', 'price', 'discount_price','rating',
                   'total_stock', 'variants', 'category', 'image', 'name', 
                   'description', 'category_id', 'section']
 

@@ -221,7 +221,7 @@ class ProductAdminDetailAPIView(APIView):
         return Response(serializer.data)
     def patch(self, request, pk):
         product = self.get_object(pk)
-        serializer = ProductsAdminSerializer(product, data=request.data)
+        serializer = ProductsAdminSerializer(product, data=request.data,partial=True)
         
         if serializer.is_valid():
             serializer.save()

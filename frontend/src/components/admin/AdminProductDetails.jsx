@@ -18,6 +18,7 @@ const AdminProductDetail = () => {
     discount_price: '',
     category_id: '',
     section: '',
+    rating:"",
     is_active: true,
     variants: [],
     image: null
@@ -87,6 +88,7 @@ const AdminProductDetail = () => {
       category_id: product.category_id || '', 
       section: product.section,
       is_active: product.is_active,
+      rating: product.rating,
       variants: product.variants || [],
       image: null 
     });
@@ -257,6 +259,10 @@ const AdminProductDetail = () => {
                 <div className="form-group" style={{flex:1}}>
                     <label>Discount</label>
                     <input type="number" name="discount_price" className="form-input" value={editFormData.discount_price} onChange={handleEditChange} />
+                </div>
+                <div className="form-group" style={{flex:1}}>
+                    <label>Rating</label>
+                    <input type="number" name="rating" className="form-input" value={editFormData.rating} onChange={handleEditChange} />
                 </div>
               </div>
 
