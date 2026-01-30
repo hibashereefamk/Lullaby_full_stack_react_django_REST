@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ru3*k-8%-*(8d2dl*9it2-me5o@gsp%18t!@8med$&crla7vt^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
@@ -75,9 +75,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 
     'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend', # Enable ?category=1
-        'rest_framework.filters.SearchFilter',               # Enable ?search=shirt
-        'rest_framework.filters.OrderingFilter',             # Enable ?ordering=price
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',               
+        'rest_framework.filters.OrderingFilter',         
     ],
 
 }
@@ -166,7 +166,7 @@ MEDIA_ROOT = BASE_DIR.parent/'media'
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

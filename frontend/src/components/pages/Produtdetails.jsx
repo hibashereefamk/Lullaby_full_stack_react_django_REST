@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import "./Produtdetails.css";
 import Rating from "./Rating";
 import { useShop } from "../context/WishlistContext";
+import { showAlert } from "../../utils/swal";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -36,14 +37,14 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
 
     const token = localStorage.getItem("access_token");
     if (!token) {
-        alert("Please login first.");
+        showAlert(' login first.');
         navigate("/login");
         return;
     }
 
     // Validate Size Selection (Only if variants exist)
     if (product.variants && product.variants.length > 0 && !selectedSize) {
-        alert("Please select a size first.");
+        showAlert("Please select a size first.");
         return;
     }
 
@@ -62,15 +63,15 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
         config
       );
       if (response.status === 200) {
-            alert(response.data.message || "Product quantity increased!");
+            showAlert(response.data.message || "Product quantity increased!");
             fetchCart()
         } else if (response.status === 201) {
-            alert(`${product.name} added to cart!`);
+            showAlert(`${product.name} added to cart!`);
             fetchCart()
         }
     } catch (err) {
       console.error("Add to cart failed", err);
-      alert("Failed to add to cart. Check console for details.");
+      showAlert("Failed to add to cart. Check console for details.");
     }
   };
 
@@ -93,18 +94,17 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
       <Navbar />
       <div className="detail-container">
         
-        {/* Back Button */}
+        
         <button className="back-btn" onClick={() => navigate(-1)}>
             <ArrowLeft size={20} />
         </button>
 
         <div className="product-detail-card">
-          {/* Left: Image */}
+       
           <div className="detail-image-wrapper">
             <img className="main-img" src={product.image} alt={product.name} />
           </div>
 
-          {/* Right: Info */}
           <div className="detail-info">
            
             

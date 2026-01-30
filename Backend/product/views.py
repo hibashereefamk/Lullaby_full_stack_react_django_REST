@@ -175,8 +175,7 @@ class ProductAdminListAPIView(APIView):
         if search_query:
             queryset = queryset.filter(
                 Q(name__icontains=search_query) | 
-                Q(description__icontains=search_query) |
-                Q(sku__icontains=search_query)
+                Q(description__icontains=search_query)
             )
 
         ordering = request.query_params.get('ordering')
@@ -200,7 +199,7 @@ class ProductAdminListAPIView(APIView):
         data = request.data.copy()
         if 'variants' in data and isinstance(data['variants'], str):
             try:
-                data['variants'] = json.loads(data['variants'])
+                data['variants'] = json.loads(data['variants'])  
             except ValueError:
                 return Response({"error": "Invalid variants JSON"}, status=status.HTTP_400_BAD_REQUEST)
         serializer =ProductsAdminSerializer(data=request.data)
