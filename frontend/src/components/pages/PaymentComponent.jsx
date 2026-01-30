@@ -2,6 +2,7 @@ import { CheckCircle } from "lucide-react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { useShop } from "../context/WishlistContext";
+import { showAlert } from "../../utils/swal";
 const PaymentButton = ({ cartTotal, addressId }) => {
     const navigate = useNavigate();
     const{fetchCart}=useShop()
@@ -18,19 +19,19 @@ const PaymentButton = ({ cartTotal, addressId }) => {
     const handlePayment = async () => {
         // --- VALIDATION ---
         if (!addressId) {
-            alert("Please select a delivery address.");
+            showAlert("Please select a delivery address.");
             return;
         }
 
         const res = await loadRazorpayScript();
         if (!res) {
-            alert("Razorpay SDK failed to load. Are you online?");
+            showAlert("Razorpay SDK failed to load. Are you online?");
             return;
         }
 
         const token = localStorage.getItem('access_token');
         if (!token) {
-            alert("Please login first!");
+            showAlert("Please login first!");
             return;
         }
 
@@ -88,7 +89,7 @@ const PaymentButton = ({ cartTotal, addressId }) => {
                         }
                     } catch (err) {
                         console.error("Order Creation Failed:", err);
-                        alert("Payment successful, but order creation failed. Please contact support.");
+                        showAlert("Payment successful, but order creation failed. Please contact support.");
                     }
                 },
 
@@ -105,13 +106,13 @@ const PaymentButton = ({ cartTotal, addressId }) => {
             // Step F: Open the Modal
             const rzp1 = new window.Razorpay(options);
             rzp1.on("payment.failed", function (response) {
-                alert("Payment Failed: " + response.error.description);
+                showAlert("Payment Failed: " + response.error.description);
             });
             rzp1.open();
 
         } catch (error) {
             console.error("Payment Error:", error);
-            alert("Something went wrong initiating the payment.");
+            showAlert("Something went wrong initiating the payment.");
         }
     };
 

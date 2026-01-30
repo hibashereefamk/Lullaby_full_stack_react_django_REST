@@ -103,7 +103,6 @@ function Home() {
           {cat.discount_percentage}% OFF
         </div>
       )}
-      {/* --- DISCOUNT BADGE END --- */}
                   <img src={cat.image} alt={cat.name} className="category-image" />
                   <div className="category-label">{cat.name}</div>
                 </div>

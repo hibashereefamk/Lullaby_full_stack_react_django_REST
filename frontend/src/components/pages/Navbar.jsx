@@ -53,8 +53,6 @@ function Navbar() {
             {wishlistCount > 0 && <span className="badge-count">{wishlistCount}</span>}
           </div>
         </Link>
-
-        {/* Cart Icon */}
         <Link to="/cart" className="nav-link">
           <div className="icon-display">
             <ShoppingCart size={24} stroke="black" fill="black" />
@@ -62,7 +60,6 @@ function Navbar() {
           </div>
         </Link>
 
-        {/* AUTH CHECK: Shows 'Login' for new users, 'Profile' for logged in users */}
         {token ? (
           <Link to="/profile" className="nav-link" title="My Profile">
             <div className="profile-wrapper">

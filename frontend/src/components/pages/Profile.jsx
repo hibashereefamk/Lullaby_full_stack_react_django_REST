@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import { User, Mail, Phone, MapPin, Calendar, Edit2, Save, X, Package, Heart, LogOut, Camera } from "lucide-react";
 import "./Profile.css";
 import { useNavigate } from "react-router-dom";
+import { showAlert } from "../../utils/swal";
 
 function Profile() {
   const [profile, setProfile] = useState(null);
@@ -31,12 +32,10 @@ function Profile() {
 
   const fetchData = async () => {
     try {
-      // 1. Fetch User Profile
       const userRes = await axios.get(`${BASE_URL}/api/profile/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       
-      // 2. Fetch User Addresses
       const addressRes = await axios.get(`${BASE_URL}/api/addresses/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -74,7 +73,7 @@ function Profile() {
       console.error("Error fetching data", err);
       // If server error (500) but we haven't loaded profile yet
       if (err.response?.status === 500 && !profile) {
-          alert("Server Error: Could not load data. Please check backend logs.");
+          showAlert("Server Error: Could not load data. Please check backend logs.");
       }
       setLoading(false);
     }
@@ -154,7 +153,7 @@ function Profile() {
       }
 
       setIsEditing(false);
-      alert("Profile updated successfully!");
+      showAlert("Profile updated successfully!");
       
       // Re-fetch to confirm everything matches
       fetchData(); 
@@ -163,7 +162,7 @@ function Profile() {
       console.error("Error updating profile", err);
       // Helper to show backend validation errors
       const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : "Failed to update.";
-      alert(`Update Failed: ${errorMsg}`);
+      showAlert(`Update Failed: ${errorMsg}`);
     }
   };
 

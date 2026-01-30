@@ -6,6 +6,7 @@ import { MapPin, CreditCard, Plus, CheckCircle,Trash2 } from 'lucide-react'
 import './checkoutpage.css'
 import PaymentButton from './PaymentComponent'
 import { useShop } from "../context/WishlistContext";
+import { showAlert } from "../../utils/swal";
 
 function Checkout () {
   const navigate = useNavigate()
@@ -17,7 +18,6 @@ function Checkout () {
   const [paymentMethod, setPaymentMethod] = useState('')
   const [loading, setLoading] = useState(true)
 
-  // Address Form State
   const [showAddressForm, setShowAddressForm] = useState(false)
 
   // UPDATED: State to match your new required fields
@@ -117,7 +117,7 @@ function Checkout () {
       !postal_code ||
       !state
     ) {
-      alert('Please fill in all required fields.')
+      showAlert('Please fill in all required fields.')
       return
     }
 
@@ -147,16 +147,16 @@ function Checkout () {
       console.error('Address Error:', err.response)
       if (err.response && err.response.data) {
         // Display specific backend validation errors
-        alert('Error: ' + JSON.stringify(err.response.data))
+        showAlert('Error: ' + JSON.stringify(err.response.data))
       } else {
-        alert('Failed to save address. Please try again.')
+        showAlert('Failed to save address. Please try again.')
       }
     }
   }
 
   const handlePlaceOrder = async () => {
     if (!selectedAddressId) {
-      alert('Please select or add a delivery address.')
+      showAlert('Please select or add a delivery address.')
       return
     }
 
@@ -174,7 +174,7 @@ function Checkout () {
       )
 
       if (res.status === 201 || res.status === 200) {
-        alert('Order Placed Successfully! Order ID: ' + res.data.order_number)
+        showAlert('Order Placed Successfully! Order ID: ' + res.data.order_number)
         setTimeout(async () => {
             await fetchCart(); 
             navigate('/order-success');
@@ -183,7 +183,7 @@ function Checkout () {
       }
     } catch (err) {
       console.error('Order Error:', err.response?.data)
-      alert(err.response?.data?.detail || 'Failed to place order.')
+      showAlert(err.response?.data?.detail || 'Failed to place order.')
     }
   }
 

@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import "./Cart.css";
 import { useNavigate } from "react-router-dom";
 import { useShop } from "../context/WishlistContext";
+import { showAlert } from "../../utils/swal";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -39,7 +40,7 @@ useEffect(() => {
       
       updateCart();
     } else {
-      alert("Please login to view your cart");
+      showAlert("Please login to view your cart");
       navigate("/login");
     }
   }, [token]);
@@ -55,7 +56,7 @@ useEffect(() => {
       updateCart(); 
     } catch (err) {
       console.error("Error updating size", err);
-      alert("Could not update size. It might be out of stock.");
+      showAlert("Could not update size. It might be out of stock.");
     }
   };
 
@@ -91,7 +92,7 @@ const handleCheckout = async () => {
     });
 
     if (missingSizes) {
-        alert("Please select a size for all items before checking out.");
+        showAlert("Please select a size for all items before checking out.");
         return;
     }
 
@@ -102,7 +103,7 @@ const handleCheckout = async () => {
         const cartData = Array.isArray(response.data) ? response.data[0] : response.data;
 
         if (!cartData || !cartData.items || cartData.items.length === 0) {
-            alert("Your cart is empty or invalid.");
+            showAlert("Your cart is empty or invalid.");
             return;
         }
 
@@ -112,7 +113,7 @@ const handleCheckout = async () => {
 
     } catch (err) {
         console.error("Checkout Error:", err);
-        alert("Could not initiate checkout. Please try again.");
+        showAlert("Could not initiate checkout. Please try again.");
     }
 };
   

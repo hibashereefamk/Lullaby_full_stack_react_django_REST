@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import './Product.css';
 import Rating from "./Rating";
+import { showAlert } from "../../utils/swal";
 
 
 import { useShop } from "../context/WishlistContext"; 
@@ -122,13 +123,13 @@ function Products() {
      e.stopPropagation();
 
      const token = localStorage.getItem("access_token");
-     if (!token) return alert("Please login");
+     if (!token) return showAlert("Please login");
      try {
         await axios.post("http://127.0.0.1:8000/api/cartitems/", 
            { product_id: product.id, quantity: 1 }, 
            { headers: { Authorization: `Bearer ${token}` } }
         );
-        alert("Added to cart!");
+        showAlert("Added to cart!");
         fetchCart();
         
      } catch(err) { console.error(err); }

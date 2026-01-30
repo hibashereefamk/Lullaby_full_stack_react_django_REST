@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "./Wishlist.css";
 import Rating from "./Rating";
 import { useShop } from "../context/WishlistContext";
-
+import { showAlert } from "../../utils/swal";
 function Wishlist() {
   const [wishlistItems, setWishlistItems] = useState([]);
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ function Wishlist() {
     if (token) {
       fetchLocalWishlist();
     } else {
-      alert("Please login to view your wishlist.");
+      showAlert("Please login to view your wishlist.");
       navigate("/login");
     }
   }, [token]);
@@ -64,12 +64,12 @@ function Wishlist() {
       );
       
       if (response.status === 200 || response.status === 201) {
-            alert("Added to cart!");
+            showAlert("Added to cart!");
             fetchCart();
       }
     } catch (err) {
       console.error("Add to cart failed", err);
-      alert("Failed to add to cart.");
+      showAlert("Failed to add to cart.");
     }
   };
 
