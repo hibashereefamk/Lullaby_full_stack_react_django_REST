@@ -5,14 +5,12 @@ import './verifyOtp.css';
 
 function VerifyOtp() {
   const [otp, setOtp] = useState("");
-  const [timer, setTimer] = useState(60); // 60-second countdown
+  const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
   
   const location = useLocation();
   const navigate = useNavigate();
   const { email } = location.state || {};
-
-  // 1. Timer Logic: Decrements 'timer' every second
   useEffect(() => {
     let interval;
     if (timer > 0) {
@@ -20,13 +18,10 @@ function VerifyOtp() {
         setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
     } else {
-      setCanResend(true); // Enable button when timer hits 0
+      setCanResend(true);
     }
-
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval); 
   }, [timer]);
-
-  // 2. Logic to Verify OTP (Your existing code)
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     try {
@@ -36,25 +31,21 @@ function VerifyOtp() {
       });
       console.log(response.data);
       alert("OTP verified successfully!");
-      navigate("/login"); // Or wherever you want to go after success
+      navigate("/login"); 
     } catch (error) {
       console.error("Error verifying OTP:", error);
       alert(error.response?.data?.message || "Invalid OTP or something went wrong.");
     }
   };
-
-  // 3. Logic to Resend OTP (Connects to your sendOTPView)
   const handleResendOtp = async () => {
-    if (!canResend) return; // Prevent clicking if timer is running
+    if (!canResend) return; 
 
     try {
-      // NOTE: Make sure this URL matches your Django URL for sendOTPView
       await axios.post("http://127.0.0.1:8000/api/send-otp/", {
         email,
       });
       alert("A new OTP has been sent to your email.");
       
-      // Reset the timer and disable the button again
       setTimer(5*60);
       setCanResend(false);
     } catch (error) {

@@ -97,11 +97,8 @@ const handleCheckout = async () => {
 
     
     try {
-        // Note: We use /api/cart/ here, not /api/cartitems/
-        // This hits CartViewSet, which uses CartSerializer to return 'total_price'
         const response = await axios.get("http://127.0.0.1:8000/api/cart/", config);
         
-        // Since ViewSet returns a list, we take the first cart
         const cartData = Array.isArray(response.data) ? response.data[0] : response.data;
 
         if (!cartData || !cartData.items || cartData.items.length === 0) {
