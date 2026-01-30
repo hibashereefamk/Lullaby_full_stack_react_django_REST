@@ -186,8 +186,6 @@ const AdminProductDetail = () => {
             <label>Description:</label>
             <p className="description-text">{product.description}</p>
           </div>
-
-          {/* Variants Table */}
           <div className="variants-section">
             <h3>Inventory / Variants</h3>
             <table className="variants-table">
@@ -230,14 +228,11 @@ const AdminProductDetail = () => {
           </div>
         </div>
       </div>
-
-      {/* --- Edit Modal (Same Logic as List View) --- */}
       {showEditModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2>Edit Product</h2>
             <form onSubmit={handleEditSubmit}>
-              {/* Reuse your form fields here */}
               <div className="form-group">
                 <label>Name</label>
                 <input name="name" className="form-input" value={editFormData.name} onChange={handleEditChange} required />
@@ -266,7 +261,6 @@ const AdminProductDetail = () => {
                 </div>
               </div>
 
-              {/* Variants Section in Modal */}
               <div className="form-group">
                 <label>Variants</label>
                 {editFormData.variants.map((variant, index) => (
