@@ -17,6 +17,9 @@ function ProductDetail() {
   
   // New state for selected size
   const [selectedSize, setSelectedSize] = useState(null);
+  useEffect(() => {
+    document.title = "LULLABY | products-details";
+  }, []);
 
 const { toggleWishlist, isInWishlist,fetchCart } = useShop();
   useEffect(() => {

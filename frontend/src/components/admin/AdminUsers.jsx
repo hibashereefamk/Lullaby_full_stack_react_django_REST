@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AdminUsers.css';
+import { showAlert } from '../../utils/swal';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -43,7 +44,7 @@ const AdminUsers = () => {
     const newStatus = !currentStatus;
     const actionName = newStatus ? "Unblock" : "Block";
 
-    if (!window.confirm(`Are you sure you want to ${actionName} this user?`)) return;
+    showAlert(`Are you sure you want to ${actionName} this user?`);
 
     const originalUsers = [...users];
     setUsers(users.map(user => 
@@ -64,7 +65,7 @@ const AdminUsers = () => {
     } catch (err) {
       console.error("Update error:", err);
       setUsers(originalUsers);
-      alert("Failed to update user status. Check if backend method is named 'patch' not 'path'.");
+      showAlert("Failed to update user status");
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AdminOrders.css';
+import { showAlert } from '../../utils/swal';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -66,7 +67,7 @@ const AdminOrders = () => {
     } catch (err) {
       console.error("Update error:", err);
       setOrders(originalOrders);
-      alert("Failed to update status. Check permissions.");
+      showAlert("Failed to update status. Check permissions.");
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import './AdminProducts.css'
+import { showAlert } from '../../utils/swal';
 
 const AdminProduct = () => {
   const navigate = useNavigate()
@@ -151,13 +152,13 @@ const AdminProduct = () => {
       await axios.post('http://127.0.0.1:8000/api/admin/products/', data, {
         headers: getAuthHeaders()
       })
-      alert('Product created successfully!')
+      showAlert('Product created successfully!')
 
       setShowModal(false)
       fetchProducts(currentPageUrl)
     } catch (err) {
       console.error('Save error:', err)
-      alert('Failed to save product. Check inputs (Ensure Category ID exists).')
+      showAlert('Failed to save product. Check inputs (Ensure Category ID exists).')
     }
   }
 
@@ -166,8 +167,7 @@ const AdminProduct = () => {
 
     const action = newStatus ? 'activate' : 'deactivate'
 
-    if (!window.confirm(`Are you sure you want to ${action} this product?`))
-      return
+    showAlert(`You are about to ${action} this product.`);
 
     try {
       await axios.patch(
@@ -179,7 +179,7 @@ const AdminProduct = () => {
       fetchProducts(currentPageUrl)
     } catch (err) {
       console.error('Error:', err)
-      alert('Failed to update status.')
+      showAlert('Failed to update status.')
     }
   }
 

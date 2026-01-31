@@ -32,14 +32,14 @@
   font-size: 0.8rem;
   font-weight: bold;
   letter-spacing: 1px;
-  color: #6A1B9A;
+  color: goldenrod;
   margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .header-title {
   font-size: 3.5rem;
-  color: #4A148C;
+  color: goldenrod;
   margin-bottom: 15px;
   font-weight: 800;
 }
@@ -86,7 +86,7 @@
   display: block;
   font-size: 2rem;
   font-weight: bold;
-  color: #6A1B9A;
+  color: goldenrod;
 }
 
 .stat-label {
@@ -197,7 +197,7 @@
 .underline {
   width: 60px;
   height: 4px;
-  background-color: #6A1B9A;
+  background-color: goldenrod;
   margin: 10px auto;
   border-radius: 2px;
 }

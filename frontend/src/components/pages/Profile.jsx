@@ -29,6 +29,9 @@ function Profile() {
     }
     fetchData();
   }, [token]);
+  useEffect(() => {
+    document.title = "LULLABY | profile";
+  }, []);
 
   const fetchData = async () => {
     try {

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Navbar.css"; 
 import { useShop } from "../context/WishlistContext";
+import logo from '../../assets/logo.png';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -38,7 +39,9 @@ function Navbar() {
     <div className="navbar">
       
       <div className="nav-left">
-        <Link to="/" className="logo-soft">LULLABY</Link>
+        <Link to="/" className="logo-soft">
+          <img src={logo} alt="Lullaby Logo" style={{width: '140px',height: '80px',borderRadius: '50%'}} />
+        </Link>
 
         <Link to="/" className="nav-link">HOME</Link>
         <Link to="/products" className="nav-link">PRODUCTS</Link>

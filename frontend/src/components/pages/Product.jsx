@@ -34,7 +34,9 @@ function Products() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  
+  useEffect(() => {
+    document.title = "LULLABY | products";
+  }, []);
   useEffect(() => {
     if (location.state?.category) setSelectedCategory(location.state.category);
     if (location.state?.section) setSelectedSection(location.state.section);

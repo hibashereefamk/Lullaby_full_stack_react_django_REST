@@ -1,15 +1,18 @@
 import React from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { useEffect } from "react";
 import { Heart, ShieldCheck, Smile, Truck, Star } from "lucide-react";
 import "./About.css";
 
 function About() {
+  useEffect(() => {
+    document.title = "LULLABY | about us";
+  }, []);
   return (
     <div className="about-page">
       <Navbar />
 
-      {/* 1. MODERN HERO SECTION */}
       <div className="about-header">
         <div className="header-content">
             <span className="brand-tag">EST. 2024</span>
@@ -19,11 +22,8 @@ function About() {
               Creating safe, soft, and sustainable essentials for your little miracle.
             </p>
         </div>
-        {/* Decorative circle */}
         <div className="circle-bg"></div>
       </div>
-
-      {/* 2. STATS STRIP */}
       <div className="stats-container">
         <div className="stat-item">
             <span className="stat-number">10k+</span>
@@ -40,8 +40,6 @@ function About() {
             <span className="stat-label">Cotton Safe</span>
         </div>
       </div>
-
-      {/* 3. STORY SECTION (Split Layout) */}
       <div className="story-wrapper">
         <div className="story-image-container">
              <div className="image-backdrop"></div>
@@ -50,7 +48,6 @@ function About() {
                alt="Mother and Baby" 
                className="story-img"
              />
-             {/* Floating Badge */}
              <div className="floating-badge">
                 <Star size={16} fill="#FFD54F" stroke="#FFD54F" />
                 <span>Top Rated</span>
@@ -73,7 +70,6 @@ function About() {
         </div>
       </div>
 
-      {/* 4. VALUES GRID */}
       <div className="values-wrapper">
         <div className="values-header">
             <h2>Why Parents Trust Us</h2>

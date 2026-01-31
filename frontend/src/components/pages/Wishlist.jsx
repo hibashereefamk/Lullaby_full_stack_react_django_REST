@@ -21,7 +21,9 @@ function Wishlist() {
       "Content-Type": "application/json",
     },
   };
-
+useEffect(() => {
+    document.title = "LULLABY | wishlist";
+  }, []);
   const handleViewProduct = (id) => navigate(`/products/${id}`);
 
   const fetchLocalWishlist = () => {

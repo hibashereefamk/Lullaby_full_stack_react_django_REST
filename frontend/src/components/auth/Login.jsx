@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useNavigate, Link } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 
+import { showAlert } from "../../utils/swal";
+
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -22,7 +24,7 @@ function Login() {
     localStorage.setItem('role', data.role);
 
     console.log("Login Success Data:", data);
-    alert("Login successful!");
+    showAlert("Login successful!");
     navigate("/");
   };
  
@@ -37,11 +39,11 @@ function Login() {
     } catch (error) {
       console.error("Error logging in:", error);
       if (error.response?.status === 403 && error.response?.data?.message === "Email not verified") {
-        alert("Please verify your email first.");
+        showAlert("Please verify your email first.");
       } else if (error.response?.status === 401) {
-        alert("Invalid email or password.");
+        showAlert("Invalid email or password.");
       } else {
-        alert("Something went wrong. Is the backend server running?");
+        showAlert("Something went wrong. Is the backend server running?");
       }
     }
   };
@@ -57,7 +59,7 @@ function Login() {
       
     } catch (error) {
       console.error("Google Login Backend Error:", error);
-      alert("Google login failed at backend. Check console for details.");
+      showAlert("Google login failed at backend. Check console for details.");
     }
   };
 

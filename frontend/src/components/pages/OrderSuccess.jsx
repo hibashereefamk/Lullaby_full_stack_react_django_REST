@@ -6,7 +6,9 @@ function OrderSuccess() {
   const location = useLocation();
   const navigate = useNavigate();
   const order = location.state?.order;
-
+useEffect(() => {
+    document.title = "LULLABY | order success";
+  }, []);
   return (
     <div className="page-wrapper">
       <Navbar />

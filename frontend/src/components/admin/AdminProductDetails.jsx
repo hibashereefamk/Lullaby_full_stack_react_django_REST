@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './AdminProductDetail.css';
+import { showAlert } from '../../utils/swal';
 
 const AdminProductDetail = () => {
   const { id } = useParams();
@@ -41,7 +42,7 @@ const AdminProductDetail = () => {
       setProduct(response.data);
     } catch (err) {
       console.error("Error fetching product:", err);
-      alert("Product not found.");
+      showAlert("Product not found.");
       navigate('/admin/products');
     } finally {
       setLoading(false);
@@ -49,7 +50,7 @@ const AdminProductDetail = () => {
   };
   const handleToggleStatus = async () => {
     const action = product.is_active ? "Deactivate" : "Activate";
-    if (!window.confirm(`Are you sure you want to ${action} this product?`)) return;
+   showAlert(`Are you sure you want to ${action} this product?`);
 
     try {
       const response = await axios.patch(
@@ -58,25 +59,25 @@ const AdminProductDetail = () => {
         { headers: getAuthHeaders() }
       );
       setProduct({ ...product, is_active: response.data.is_active });
-      alert(`Product ${action}d successfully!`);
+      showAlert(`Product ${action}d successfully!`);
     } catch (err) {
       console.error("Status update error:", err);
-      alert("Failed to update status.");
+      showAlert("Failed to update status.");
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to PERMANENTLY delete this product?")) return;
+    showAlert("Are you sure you want to PERMANENTLY delete this product?");
 
     try {
       await axios.delete(`http://127.0.0.1:8000/api/admin/products/${id}/`, {
         headers: getAuthHeaders()
       });
-      alert("Product deleted.");
+      showAlert("Product deleted.");
       navigate('/admin/products');
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Failed to delete product.");
+      showAlert("Failed to delete product.");
     }
   };
   const openEditModal = () => {
@@ -132,10 +133,10 @@ const AdminProductDetail = () => {
       });
       setProduct(response.data); 
       setShowEditModal(false);
-      alert("Product updated!");
+      showAlert("Product updated!");
     } catch (err) {
       console.error("Update error:", err);
-      alert("Failed to update.");
+      showAlert("Failed to update.");
     }
   };
 

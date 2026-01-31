@@ -31,7 +31,9 @@ function Checkout () {
     country: 'India',
     is_default: false
   })
-
+useEffect(() => {
+    document.title = "LULLABY | checkout";
+  }, []);
   const token = localStorage.getItem('access_token')
   const config = {
     headers: {

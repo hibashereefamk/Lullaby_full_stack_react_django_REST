@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { showAlert } from "../../utils/swal";
 
 const ShopContext = createContext();
 
@@ -54,7 +55,7 @@ export const ShopProvider = ({ children }) => {
   }, [token, fetchCart, fetchWishlist]); 
 
   const toggleWishlist = async (product) => {
-    if (!token) { alert("Please login first."); return; }
+    if (!token) { showAlert("Please login first."); return; }
     
     const existingItem = wishlistItems.find(item => item.product.id === product.id);
 

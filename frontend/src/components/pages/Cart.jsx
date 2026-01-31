@@ -20,7 +20,9 @@ function Cart() {
     },
   };
 
-
+useEffect(() => {
+    document.title = "LULLABY | cart";
+  }, []);
   useEffect(() => {
     const newTotal = cartItems.reduce(
       (acc, item) => acc + item.subtotal,

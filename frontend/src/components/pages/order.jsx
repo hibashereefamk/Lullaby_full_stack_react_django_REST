@@ -13,7 +13,9 @@ function Order() {
 
   const token = localStorage.getItem("access_token");
   
-  
+  useEffect(() => {
+    document.title = "LULLABY | orders";
+  }, []);
   useEffect(() => {
     if (!token) {
       navigate("/login");

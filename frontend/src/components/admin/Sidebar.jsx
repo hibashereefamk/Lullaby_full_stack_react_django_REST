@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, Outlet,useNavigate} from 'react-router-dom';
 import './Sidebar.css';
 import { LogOut } from 'lucide-react';
+import logo from '../../assets/logo.png';
 
 const Sidebar = () => {
   const Navigate=useNavigate()
@@ -15,8 +16,8 @@ const Sidebar = () => {
     <aside className="sidemenu">
       {/* 1. Logo Section */}
       <div className="sidemenu-header">
-        <NavLink to="/" className="logo-soft">
-          LULLABY
+        <NavLink to="/">
+          <img src={logo} alt="Lullaby Logo" style={{width: '140px',height: '80px',borderRadius: '50%'}} />
         </NavLink>
         </div>
         <div className="user-avatar">

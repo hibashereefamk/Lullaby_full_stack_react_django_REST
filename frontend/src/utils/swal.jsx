@@ -1,18 +1,12 @@
 import Swal from 'sweetalert2';
+import logo from '../assets/logo.png';
 
 export const showAlert = (message) => {
   Swal.fire({
     // Using HTML to recreate your text logo style
     html: `
-      <div style="
-        font-family: 'Quicksand', sans-serif; 
-        font-size: 28px;
-        font-weight: 700;  
-        color: #77199c; 
-        margin-bottom: 10px;
-        letter-spacing: 2px;
-        text-shadow: 3px 3px 0px #dbcdfd;">
-        LULLABY
+      <div>
+        <img src=${logo} alt="Lullaby Logo" style="width: 140px; height: 80px; border-radius: 50%;" />
       </div>
       <div style="font-size: 16px; color: #555;">${message}</div>
     `,
