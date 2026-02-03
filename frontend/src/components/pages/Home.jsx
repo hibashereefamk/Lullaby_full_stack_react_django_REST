@@ -97,7 +97,6 @@ function Home() {
             categories.slice(0, 8).map((cat) => (
               <Link key={cat.id} to={`/products?category=${cat.slug}`} style={{ textDecoration: 'none' }}>
                 <div className="category-card">
-                  {/* --- DISCOUNT BADGE START --- */}
       {cat.discount_percentage > 0 && (
         <div className="discount-badge">
           {cat.discount_percentage}% OFF

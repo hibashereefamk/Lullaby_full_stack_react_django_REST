@@ -13,10 +13,9 @@ useEffect(() => {
     <div className="page-wrapper">
       <Navbar />
       
-      {/* Main Container */}
       <div style={{
         maxWidth: "600px",
-        margin: "120px auto 40px", // Top margin clears Navbar
+        margin: "120px auto 40px", 
         padding: "40px",
         textAlign: "center",
         backgroundColor: "#fff",
@@ -30,14 +29,12 @@ useEffect(() => {
         justifyContent: "center"
       }}>
         
-        {/* Success Icon */}
         <CheckCircle 
           size={80} 
           color="#27ae60" 
           style={{ marginBottom: "20px" }} 
         />
 
-        {/* Heading */}
         <h1 style={{
           fontSize: "2rem",
           fontWeight: "700",
@@ -47,7 +44,6 @@ useEffect(() => {
           Order Placed Successfully!
         </h1>
 
-        {/* Subtext */}
         <p style={{
           color: "#666",
           fontSize: "1.1rem",
