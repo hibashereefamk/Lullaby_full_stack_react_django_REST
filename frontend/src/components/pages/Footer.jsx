@@ -9,7 +9,6 @@ function Footer() {
     <footer className="footer-container">
       <div className="footer-content">
         
-        {/* Column 1: Brand Info */}
         <div className="footer-column">
           <h2 style={{ fontSize: "2rem", margin: 0, color: "white" }}>LULLABY</h2>
           <p style={{ marginTop: "15px", lineHeight: "1.6", color: "#E1BEE7" }}>
@@ -18,7 +17,6 @@ function Footer() {
           </p>
         </div>
 
-        {/* Column 2: Quick Links */}
         <div className="footer-column">
           <h3>Quick Links</h3>
           <Link to="/" className="footer-link">Home</Link>
@@ -27,7 +25,6 @@ function Footer() {
           <Link to="/order" className="footer-link">Track Order</Link>
         </div>
 
-        {/* Column 3: Customer Care */}
         <div className="footer-column">
           <h3>Customer Care</h3>
           <Link to="/contact" className="footer-link">Contact Us</Link>
@@ -36,7 +33,6 @@ function Footer() {
           <Link to="/terms" className="footer-link">Terms & Conditions</Link>
         </div>
 
-        {/* Column 4: Contact & Social */}
         <div className="footer-column">
           <h3>Contact Us</h3>
           <div style={{ display: "flex", gap: "10px", marginBottom: "10px", color: "#E1BEE7" }}>
