@@ -71,10 +71,9 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Buttons */}
+        
         <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", justifyContent: "center" }}>
           
-          {/* Continue Shopping Button */}
           <button 
             onClick={() => navigate("/products")}
             style={{
@@ -93,8 +92,6 @@ useEffect(() => {
           >
             Continue Shopping
           </button>
-
-          {/* View Order Button */}
           <button 
             onClick={() => navigate("/order")}
             style={{

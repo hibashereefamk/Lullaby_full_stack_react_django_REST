@@ -13,9 +13,7 @@ function ProductDetail() {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
- 
-  
-  // New state for selected size
+
   const [selectedSize, setSelectedSize] = useState(null);
   useEffect(() => {
     document.title = "LULLABY | products-details";
@@ -23,7 +21,6 @@ function ProductDetail() {
 
 const { toggleWishlist, isInWishlist,fetchCart } = useShop();
   useEffect(() => {
-    // Note: Ensure this matches your URL from urls.py (e.g., /api/productdetails/ or /api/products/)
     axios.get(`http://127.0.0.1:8000/api/productdetails/${id}/`) 
       .then(res => {
         setProduct(res.data);
@@ -45,7 +42,6 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
         return;
     }
 
-    // Validate Size Selection (Only if variants exist)
     if (product.variants && product.variants.length > 0 && !selectedSize) {
         showAlert("Please select a size first.");
         return;
@@ -59,7 +55,6 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
         },
       };
 
-      // Use the correct endpoint /api/cartitems/
       const response = await axios.post(
         "http://127.0.0.1:8000/api/cartitems/", 
         { product_id: product.id, quantity: 1,size: selectedSize},
@@ -113,7 +108,6 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
             
             <h1 className="product-title">{product.name}</h1>
             
-            {/* Price Section */}
             <div className="price-block">
                 <span className="current-price">₹{displayPrice}</span>
                 {hasDiscount && (

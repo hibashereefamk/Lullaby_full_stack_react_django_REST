@@ -7,7 +7,8 @@ function Rating({ value, text,style }) {
       alignItems: 'center', 
       justifyContent: style?.justifyContent || 'center',
       marginBottom: '10px' }}> 
-      
+                                   
+                                   
       {[1, 2, 3, 4, 5].map((rate) => (
         <span key={rate} style={{ marginRight: '2px' }}>
           {value >= rate ? (
