@@ -104,8 +104,6 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
           </div>
 
           <div className="detail-info">
-           
-            
             <h1 className="product-title">{product.name}</h1>
             
             <div className="price-block">
@@ -116,8 +114,6 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
             </div>
 
             <p className="description">{product.description}</p>
-
-            {/* Variants / Size Selector */}
             {product.variants && product.variants.length > 0 && (
                 <div className="size-section">
                     <h3>Select Size</h3>
@@ -141,7 +137,6 @@ const { toggleWishlist, isInWishlist,fetchCart } = useShop();
                 </div>
             )}
 
-            {/* Action Buttons */}
             <div className="action-buttons">
               <button className="btn-cart" onClick={addToCart}>
                 <ShoppingCart size={20} /> Add to Cart

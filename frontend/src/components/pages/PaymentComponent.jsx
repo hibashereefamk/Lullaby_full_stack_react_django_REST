@@ -44,14 +44,12 @@ const PaymentButton = ({ cartTotal, addressId }) => {
         };
 
         try {
-            // Step C: Call Django to Create Order (Razorpay Order)
             const rpresponse = await axios.post(
                 'http://127.0.0.1:8000/api/payment/create-order/',
                 { amount: cartTotal },
                 config
             );
 
-            // Step D: Extract data
             const { order_id, amount, key, currency } = rpresponse.data;
 
             // Step E: Configure Razorpay Options
@@ -102,8 +100,6 @@ const PaymentButton = ({ cartTotal, addressId }) => {
                     color: "#3399cc"
                 }
             };
-
-            // Step F: Open the Modal
             const rzp1 = new window.Razorpay(options);
             rzp1.on("payment.failed", function (response) {
                 showAlert("Payment Failed: " + response.error.description);
