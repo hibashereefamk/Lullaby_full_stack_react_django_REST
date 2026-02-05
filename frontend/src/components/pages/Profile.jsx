@@ -43,25 +43,20 @@ function Profile() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Get the most relevant address (Default or First)
-      const results = addressRes.data.results || addressRes.data; // Handle pagination if exists
+      const results = addressRes.data.results || addressRes.data;
       const defaultAddr = Array.isArray(results) ? (results.find(addr => addr.is_default) || results[0]) : null;
 
       setProfile(userRes.data);
       if (defaultAddr) setAddressId(defaultAddr.id);
       
-      // 3. Fill the Form
-      // Priority for Phone: User Profile -> Address -> Empty
       const phoneToDisplay = userRes.data.phone_number || defaultAddr?.phone_number || "";
       
-      // Priority for Name: Address Name -> User Name -> Username
       const nameToDisplay = defaultAddr?.full_name || userRes.data.name || userRes.data.username || "";
 
       setFormData({
         ...userRes.data,
         bio: userRes.data.bio || "",
         phone_number: phoneToDisplay,
-        // Address Fields
         full_name: nameToDisplay, 
         street_address: defaultAddr?.street_address || "",
         city: defaultAddr?.city || "",
@@ -74,7 +69,6 @@ function Profile() {
       setLoading(false);
     } catch (err) {
       console.error("Error fetching data", err);
-      // If server error (500) but we haven't loaded profile yet
       if (err.response?.status === 500 && !profile) {
           showAlert("Server Error: Could not load data. Please check backend logs.");
       }
@@ -97,12 +91,10 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // --- STEP 1: Update User Profile (Bio, Phone, Image) ---
       const profileData = new FormData();
       profileData.append("bio", formData.bio || "");
       profileData.append("phone_number", formData.phone_number || "");
       
-      // Only append name if your User model supports 'name' field
       if (formData.full_name) profileData.append("name", formData.full_name);
 
       if (imageFile) {
@@ -122,8 +114,6 @@ function Profile() {
       // Update local profile state immediately
       setProfile(userUpdateRes.data);
 
-      // --- STEP 2: Update Address ---
-      // Ensure we have enough data to create an address
       if (formData.street_address && formData.city && formData.postal_code) {
           const addressPayload = {
             full_name: formData.full_name, // Use the editable name
