@@ -111,12 +111,11 @@ function Profile() {
         }
       );
       
-      // Update local profile state immediately
       setProfile(userUpdateRes.data);
 
       if (formData.street_address && formData.city && formData.postal_code) {
           const addressPayload = {
-            full_name: formData.full_name, // Use the editable name
+            full_name: formData.full_name, 
             phone_number: formData.phone_number,
             street_address: formData.street_address,
             city: formData.city,
@@ -148,12 +147,10 @@ function Profile() {
       setIsEditing(false);
       showAlert("Profile updated successfully!");
       
-      // Re-fetch to confirm everything matches
       fetchData(); 
 
     } catch (err) {
       console.error("Error updating profile", err);
-      // Helper to show backend validation errors
       const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : "Failed to update.";
       showAlert(`Update Failed: ${errorMsg}`);
     }
@@ -219,7 +216,6 @@ function Profile() {
               </div>
 
               <div className="form-grid">
-                {/* ADDED: Full Name Field */}
                 <div className="form-group">
                   <label>Full Name (Receiver)</label>
                   <input type="text" name="full_name" value={formData.full_name || ""} onChange={handleChange} placeholder="Full Name" />
