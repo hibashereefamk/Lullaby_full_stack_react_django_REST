@@ -17,7 +17,6 @@ const PaymentButton = ({ cartTotal, addressId }) => {
     };
 
     const handlePayment = async () => {
-        // --- VALIDATION ---
         if (!addressId) {
             showAlert("Please select a delivery address.");
             return;
@@ -34,8 +33,6 @@ const PaymentButton = ({ cartTotal, addressId }) => {
             showAlert("Please login first!");
             return;
         }
-
-        // --- FIX 1: Define config HERE, after getting the token ---
         const config = {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -52,7 +49,6 @@ const PaymentButton = ({ cartTotal, addressId }) => {
 
             const { order_id, amount, key, currency } = rpresponse.data;
 
-            // Step E: Configure Razorpay Options
             const options = {
                 key: key,
                 amount: amount,
@@ -72,7 +68,6 @@ const PaymentButton = ({ cartTotal, addressId }) => {
                             transaction_id: response.razorpay_payment_id
                         };
 
-                        // Save the actual order in Django
                         const orderRes = await axios.post(
                             "http://127.0.0.1:8000/api/orders/",
                             orderData,
